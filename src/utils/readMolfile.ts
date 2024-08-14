@@ -1,3 +1,5 @@
+import { BondType } from "../constants";
+
 export interface MolObj {
   header: {
     title: string;
@@ -21,7 +23,7 @@ export interface MolObj {
   bonds: Array<{
     atom1: number;
     atom2: number;
-    type: number;
+    type: BondType;
   }>;
   molecule: {
     min: { x: number; y: number; z: number };
