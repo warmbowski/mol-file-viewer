@@ -1,18 +1,25 @@
 import { useMemo } from "react";
 import { Vector3 } from "three";
-import { MolObj } from "../utils/readMolfile";
+import { Text } from "@react-three/drei";
 import { Element } from "./Elements";
 import { Bond } from "./Bonds";
+import { Progress } from "./Progress";
+import { AppOptions } from "./App";
+import { useGetMolecule } from "../api/hooks/useGetMolecule";
 
-export function Molecule({
-  atoms,
-  bonds,
-  hideH,
-}: MolObj & { hideH?: boolean }) {
+interface MoleculeProps {
+  options: AppOptions;
+}
+
+export function Molecule({ options }: MoleculeProps) {
+  const { hideHydrogens, molecule } = options;
+  const { data, error, isFetching } = useGetMolecule(molecule);
+  const { atoms, bonds } = data || { atoms: [], bonds: [] };
+
   const elements = useMemo(() => {
     return atoms
       .filter((atom) => {
-        return hideH ? atom.type !== "H" : true;
+        return hideHydrogens ? atom.type !== "H" : true;
       })
       .map((atom, index) => {
         const { x, y, z, type } = atom;
@@ -24,12 +31,12 @@ export function Molecule({
           />
         );
       });
-  }, [atoms, hideH]);
+  }, [atoms, hideHydrogens]);
 
   const elementBonds = useMemo(() => {
     return bonds
       .filter((bond) => {
-        if (hideH) {
+        if (hideHydrogens) {
           const { atom1, atom2 } = bond;
           const { type: type1 } = atoms[atom1 - 1];
           const { type: type2 } = atoms[atom2 - 1];
@@ -47,12 +54,14 @@ export function Molecule({
 
         return <Bond key={index} from={start} to={end} bondType={type} />;
       });
-  }, [atoms, bonds, hideH]);
+  }, [atoms, bonds, hideHydrogens]);
 
   return (
     <group>
       {elements}
       {elementBonds}
+      {isFetching && <Progress />}
+      {error && <Text color="red">Error loading molecule</Text>}
     </group>
   );
 }

@@ -32,7 +32,7 @@ export interface MolObj {
   };
 }
 
-export const readMolFile = (molFile: string): MolObj => {
+export function readMolFile(molFile: string): MolObj {
   const split = molFile.split("\n");
 
   // parse out header information
@@ -127,4 +127,4 @@ export const readMolFile = (molFile: string): MolObj => {
     bonds: bondsArray,
     molecule,
   };
-};
+}
