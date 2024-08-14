@@ -2,6 +2,7 @@ export enum BondType {
   SINGLE = 1,
   DOUBLE = 2,
   TRIPLE = 3,
+  AROMATIC = 4,
 }
 
 export const ELEMENT_DATA_MAP = new Map([
