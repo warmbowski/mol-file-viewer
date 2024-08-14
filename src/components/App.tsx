@@ -70,7 +70,13 @@ export default function App() {
           <color attach="background" args={["black"]} />
         </Environment>
       </Canvas>
-      <input type="file" id="file-input" hidden onChange={handleFileSelect} />
+      <input
+        type="file"
+        id="file-input"
+        accept=".mol, .sdf"
+        hidden
+        onChange={handleFileSelect}
+      />
     </>
   );
 }
