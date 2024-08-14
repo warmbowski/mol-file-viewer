@@ -8,8 +8,9 @@ import { MolObj, readMolFile } from "../utils/readMolfile";
 
 export default function App() {
   const [molObj, setMolObj] = useState<MolObj>();
-  const { debug, compound } = useControls({
+  const { debug, compound, hideHydrogens } = useControls({
     debug: false,
+    hideHydrogens: false,
     compound: {
       value: "6324",
       options: {
@@ -64,7 +65,7 @@ export default function App() {
           gravity={[0, -40, 0]}
           timeStep={1 / 60}
         >
-          {molObj && <Molecule {...molObj} />}
+          {molObj && <Molecule {...molObj} hideH={hideHydrogens} />}
         </Physics>
         <Environment background blur={0.75}>
           <color attach="background" args={["black"]} />
