@@ -5,17 +5,17 @@ import { button, useControls } from "leva";
 import { Molecule } from "./Molecule";
 import { useUploadMolecule } from "../api/hooks/useUploadMolecule";
 import { useCallback } from "react";
-
-export interface AppOptions {
-  debug: boolean;
-  hideHydrogens: boolean;
-  molecule: string;
-}
+import { useAtom } from "jotai";
+import { debugAtom, hideHydrogensAtom, moleculeAtom } from "../state/app-state";
 
 export default function App() {
-  const [options, setOptions] = useControls(() => ({
-    debug: false,
-    hideHydrogens: false,
+  const [debug, setDebug] = useAtom(debugAtom);
+  const [, setHideHydrogens] = useAtom(hideHydrogensAtom);
+  const [, setMolecule] = useAtom(moleculeAtom);
+
+  const [, setOptions] = useControls(() => ({
+    debug: { value: false, onChange: setDebug },
+    hideHydrogens: { value: false, onChange: setHideHydrogens },
     molecule: {
       value: "6324",
       options: {
@@ -28,6 +28,7 @@ export default function App() {
         "?? (9683173)": "9683173",
         custom: "custom",
       },
+      onChange: setMolecule,
     },
     upload: button(() => {
       document.getElementById("file-input")?.click();
@@ -51,18 +52,18 @@ export default function App() {
   return (
     <>
       <Canvas camera={{ position: [0, 0, 13], fov: 25 }}>
-        {options.debug && <axesHelper args={[5]} />}
+        {debug && <axesHelper args={[5]} />}
         <OrbitControls />
         <ambientLight intensity={Math.PI} />
         <pointLight position={[10, 10, 10]} castShadow intensity={1000} />
 
         <Physics
-          debug={options.debug}
+          debug={debug}
           interpolate
           gravity={[0, -40, 0]}
           timeStep={1 / 60}
         >
-          <Molecule options={options} />
+          <Molecule />
         </Physics>
         <Environment background blur={0.75}>
           <color attach="background" args={["black"]} />

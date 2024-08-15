@@ -4,15 +4,13 @@ import { Text } from "@react-three/drei";
 import { Element } from "./Elements";
 import { Bond } from "./Bonds";
 import { Progress } from "./Progress";
-import { AppOptions } from "./App";
 import { useGetMolecule } from "../api/hooks/useGetMolecule";
+import { useAtom } from "jotai";
+import { hideHydrogensAtom, moleculeAtom } from "../state/app-state";
 
-interface MoleculeProps {
-  options: AppOptions;
-}
-
-export function Molecule({ options }: MoleculeProps) {
-  const { hideHydrogens, molecule } = options;
+export function Molecule() {
+  const [molecule] = useAtom(moleculeAtom);
+  const [hideHydrogens] = useAtom(hideHydrogensAtom);
   const { data, error, isFetching } = useGetMolecule(molecule);
   const { atoms, bonds } = data || { atoms: [], bonds: [] };
 
