@@ -6,58 +6,51 @@ import { Bond } from "./Bonds";
 import { Progress } from "./Progress";
 import { useGetMolecule } from "../api/hooks/useGetMolecule";
 import { useAtom } from "jotai";
-import { hideHydrogensAtom, moleculeAtom } from "../state/app-state";
+import { hideBallsAtom, moleculeAtom } from "../state/app-state";
 
 export function Molecule() {
   const [molecule] = useAtom(moleculeAtom);
-  const [hideHydrogens] = useAtom(hideHydrogensAtom);
+  const [hideBalls] = useAtom(hideBallsAtom);
+
   const { data, error, isFetching } = useGetMolecule(molecule);
-  const { atoms, bonds } = data || { atoms: [], bonds: [] };
+  const atoms = useMemo(() => data?.atoms || [], [data?.atoms]);
+  const bonds = useMemo(() => data?.bonds || [], [data?.bonds]);
 
-  const elements = useMemo(() => {
-    return atoms
-      .filter((atom) => {
-        return hideHydrogens ? atom.type !== "H" : true;
-      })
-      .map((atom, index) => {
-        const { x, y, z, type } = atom;
-        return (
-          <Element
-            key={`${type}${index}`}
-            type={type}
-            position={new Vector3(x, y, z)}
-          />
-        );
-      });
-  }, [atoms, hideHydrogens]);
+  const atomicRadii = useMemo(() => {
+    return hideBalls
+      ? []
+      : atoms.map((atom, index) => {
+          const { x, y, z, type } = atom;
+          return (
+            <Element
+              key={`${type}${index}`}
+              type={type}
+              position={new Vector3(x, y, z)}
+            />
+          );
+        });
+  }, [atoms, hideBalls]);
 
-  const elementBonds = useMemo(() => {
-    return bonds
-      .filter((bond) => {
-        if (hideHydrogens) {
-          const { atom1, atom2 } = bond;
-          const { type: type1 } = atoms[atom1 - 1];
-          const { type: type2 } = atoms[atom2 - 1];
-          return type1 !== "H" && type2 !== "H";
-        }
-        return true;
-      })
-      .map((bond, index) => {
-        const { atom1, atom2, type } = bond;
-        const { x: x1, y: y1, z: z1 } = atoms[atom1 - 1];
-        const { x: x2, y: y2, z: z2 } = atoms[atom2 - 1];
+  const atomicBonds = useMemo(() => {
+    return bonds.map((bond, index) => {
+      const { atom1, atom2, type } = bond;
 
-        const start = new Vector3(x1, y1, z1);
-        const end = new Vector3(x2, y2, z2);
-
-        return <Bond key={index} from={start} to={end} bondType={type} />;
-      });
-  }, [atoms, bonds, hideHydrogens]);
+      return (
+        <Bond
+          key={index}
+          atoms={atoms}
+          atom1={atom1}
+          atom2={atom2}
+          bondType={type}
+        />
+      );
+    });
+  }, [atoms, bonds]);
 
   return (
     <group>
-      {elements}
-      {elementBonds}
+      {atomicBonds}
+      {atomicRadii}
       {isFetching && <Progress />}
       {error && <Text color="red">Error loading molecule</Text>}
     </group>

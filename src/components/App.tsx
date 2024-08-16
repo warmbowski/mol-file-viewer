@@ -6,18 +6,32 @@ import { Molecule } from "./Molecule";
 import { useUploadMolecule } from "../api/hooks/useUploadMolecule";
 import { useCallback } from "react";
 import { useAtom } from "jotai";
-import { debugAtom, hideHydrogensAtom, moleculeAtom } from "../state/app-state";
+import {
+  debugAtom,
+  noHAtom,
+  hideBallsAtom,
+  hideSticksAtom,
+  hideCloudsAtom,
+  moleculeAtom,
+} from "../state/app-state";
 
 export default function App() {
   const [debug, setDebug] = useAtom(debugAtom);
-  const [, setHideHydrogens] = useAtom(hideHydrogensAtom);
+  const [, setNoH] = useAtom(noHAtom);
+  const [, setHideBalls] = useAtom(hideBallsAtom);
+  const [, setHideSticks] = useAtom(hideSticksAtom);
+  const [, setHideClouds] = useAtom(hideCloudsAtom);
   const [, setMolecule] = useAtom(moleculeAtom);
 
   const [, setOptions] = useControls(() => ({
     debug: { value: false, onChange: setDebug },
-    hideHydrogens: { value: false, onChange: setHideHydrogens },
+    noH: { value: false, label: "No H atoms", onChange: setNoH },
+    hideBalls: { value: false, label: "Hide balls", onChange: setHideBalls },
+    hideSticks: { value: false, label: "Hide sticks", onChange: setHideSticks },
+    hideClouds: { value: false, label: "Hide clouds", onChange: setHideClouds },
     molecule: {
       value: "6324",
+      label: "Pick molecule",
       options: {
         "ethane (6324)": "6324",
         "ethanol (682)": "682",
@@ -30,8 +44,8 @@ export default function App() {
       },
       onChange: setMolecule,
     },
-    upload: button(() => {
-      document.getElementById("file-input")?.click();
+    upload: button(() => document.getElementById("file-input")?.click(), {
+      disabled: false,
     }),
   }));
 
@@ -66,7 +80,7 @@ export default function App() {
           <Molecule />
         </Physics>
         <Environment background blur={0.75}>
-          <color attach="background" args={["black"]} />
+          <color attach="background" args={[0x333533]} />
         </Environment>
       </Canvas>
       <input

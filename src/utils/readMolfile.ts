@@ -70,7 +70,7 @@ export function readMolFile(molFile: string): MolObj {
   }, {} as MolObj["counts"]);
 
   // parse out atoms and molecule bounds
-  const atomsArray = [];
+  const atomsArray: MolObj["atoms"] = [];
   const molecule = {
     min: { x: Infinity, y: Infinity, z: Infinity },
     max: { x: -Infinity, y: -Infinity, z: -Infinity },
@@ -105,7 +105,7 @@ export function readMolFile(molFile: string): MolObj {
   };
 
   // parse out bonds
-  const bondsArray = [];
+  const bondsArray: MolObj["bonds"] = [];
   for (let i = 4 + counts.atoms; i < 4 + counts.atoms + counts.bonds; i++) {
     const bond = {
       atom1: Number(split[i].slice(0, 3).trim()),

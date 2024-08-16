@@ -1,6 +1,10 @@
 import { MeshProps } from "@react-three/fiber";
 import { ColorRepresentation } from "three";
-import { ELEMENT_DATA_MAP } from "../constants";
+import { BondType, ELEMENT_DATA_MAP } from "../constants";
+import { noHAtom } from "../state/app-state";
+import { useAtom } from "jotai";
+import { RapierRigidBody, RigidBody } from "@react-three/rapier";
+import { useRef } from "react";
 
 interface ElementProps extends MeshProps {
   type: string;
@@ -9,13 +13,42 @@ interface ElementProps extends MeshProps {
 }
 
 export function Element({ type, ...meshProps }: ElementProps) {
-  const { radius, color } = ELEMENT_DATA_MAP.get(type) || {};
+  const ref = useRef<RapierRigidBody>(null!);
+  const [noH] = useAtom(noHAtom);
+  const { radii, color } = ELEMENT_DATA_MAP.get(type) || {};
+
+  const radius = radii?.[BondType.NONE] || 0.2;
+
+  if (noH && type === "H") {
+    return null;
+  }
+
+  // console.log("Element", type, radius, color);
 
   return (
-    <mesh {...meshProps}>
-      <sphereGeometry args={[radius, 32, 32]} />
-      <meshPhongMaterial color={color} opacity={0.7} transparent />
-    </mesh>
+    <RigidBody
+      ref={ref}
+      type={"fixed"}
+      enabledRotations={[false, false, true]}
+      enabledTranslations={[true, true, false]}
+      linearDamping={4}
+      angularDamping={1}
+      friction={0.1}
+      colliders={"ball"}
+    >
+      <mesh {...meshProps}>
+        <sphereGeometry args={[radius, 32, 32]} />
+        <meshStandardMaterial
+          color={color}
+          roughness={0.5}
+          metalness={0.5}
+          // transparent
+          // opacity={0.75}
+          // depthTest
+          // depthWrite
+        />
+      </mesh>
+    </RigidBody>
   );
 }
 
