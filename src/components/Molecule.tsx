@@ -20,11 +20,11 @@ export function Molecule() {
     return hideBalls
       ? []
       : atoms.map((atom, index) => {
-          const { x, y, z, type } = atom;
+          const { x, y, z, symbol } = atom;
           return (
             <Element
-              key={`${type}${index}`}
-              type={type}
+              key={`${symbol}${index}`}
+              symbol={symbol}
               position={new Vector3(x, y, z)}
             />
           );

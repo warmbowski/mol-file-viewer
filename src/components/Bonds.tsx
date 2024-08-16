@@ -29,10 +29,10 @@ export function Bond({ atoms, atom1, atom2, bondType }: BondProps) {
       return null;
     }
 
-    const { x: x1, y: y1, z: z1, type: type1 } = atoms[atom1 - 1];
-    const { x: x2, y: y2, z: z2, type: type2 } = atoms[atom2 - 1];
+    const { x: x1, y: y1, z: z1, symbol: symbol1 } = atoms[atom1 - 1];
+    const { x: x2, y: y2, z: z2, symbol: symbol2 } = atoms[atom2 - 1];
 
-    if (noH && (type1 === "H" || type2 === "H")) {
+    if (noH && (symbol1 === "H" || symbol2 === "H")) {
       return null;
     }
 

@@ -20,15 +20,15 @@ export function ElectronClouds({
 }) {
   const [noH] = useAtom(noHAtom);
   const rad1 = useMemo(
-    () => ELEMENT_DATA_MAP.get(atom1.type)?.radii[bondType],
-    [bondType, atom1.type]
+    () => ELEMENT_DATA_MAP.get(atom1.symbol)?.radii[bondType],
+    [bondType, atom1.symbol]
   );
   const rad2 = useMemo(
-    () => ELEMENT_DATA_MAP.get(atom2.type)?.radii[bondType],
-    [bondType, atom2.type]
+    () => ELEMENT_DATA_MAP.get(atom2.symbol)?.radii[bondType],
+    [bondType, atom2.symbol]
   );
 
-  if (noH && (atom1.type === "H" || atom2.type === "H")) {
+  if (noH && (atom1.symbol === "H" || atom2.symbol === "H")) {
     return null;
   }
 

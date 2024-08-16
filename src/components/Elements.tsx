@@ -7,19 +7,19 @@ import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useRef } from "react";
 
 interface ElementProps extends MeshProps {
-  type: string;
+  symbol: string;
   radius?: number;
   color?: ColorRepresentation;
 }
 
-export function Element({ type, ...meshProps }: ElementProps) {
+export function Element({ symbol, ...meshProps }: ElementProps) {
   const ref = useRef<RapierRigidBody>(null!);
   const [noH] = useAtom(noHAtom);
-  const { radii, color } = ELEMENT_DATA_MAP.get(type) || {};
+  const { radii, color } = ELEMENT_DATA_MAP.get(symbol) || {};
 
   const radius = radii?.[BondType.NONE] || 0.2;
 
-  if (noH && type === "H") {
+  if (noH && symbol === "H") {
     return null;
   }
 
@@ -53,41 +53,41 @@ export function Element({ type, ...meshProps }: ElementProps) {
 }
 
 export function C(props: MeshProps) {
-  return <Element type="C" {...props} />;
+  return <Element symbol="C" {...props} />;
 }
 
 export function H(props: MeshProps) {
-  return <Element type="H" {...props} />;
+  return <Element symbol="H" {...props} />;
 }
 
 export function O(props: MeshProps) {
-  return <Element type="O" {...props} />;
+  return <Element symbol="O" {...props} />;
 }
 
 export function N(props: MeshProps) {
-  return <Element type="N" {...props} />;
+  return <Element symbol="N" {...props} />;
 }
 
 export function S(props: MeshProps) {
-  return <Element type="S" {...props} />;
+  return <Element symbol="S" {...props} />;
 }
 
 export function P(props: MeshProps) {
-  return <Element type="P" {...props} />;
+  return <Element symbol="P" {...props} />;
 }
 
 export function F(props: MeshProps) {
-  return <Element type="F" {...props} />;
+  return <Element symbol="F" {...props} />;
 }
 
 export function Cl(props: MeshProps) {
-  return <Element type="Cl" {...props} />;
+  return <Element symbol="Cl" {...props} />;
 }
 
 export function Br(props: MeshProps) {
-  return <Element type="Br" {...props} />;
+  return <Element symbol="Br" {...props} />;
 }
 
 export function I(props: MeshProps) {
-  return <Element type="I" {...props} />;
+  return <Element symbol="I" {...props} />;
 }

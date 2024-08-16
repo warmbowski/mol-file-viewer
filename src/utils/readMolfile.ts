@@ -1,5 +1,24 @@
 import { BondType } from "../constants";
 
+export interface AtomData {
+  id: number;
+  x: number;
+  y: number;
+  z: number;
+  symbol: string;
+}
+
+export interface BondData {
+  atom1: number;
+  atom2: number;
+  type: BondType;
+}
+
+export interface MoleculeData {
+  atoms: AtomData[];
+  bonds: BondData[];
+}
+
 export interface MolObj {
   header: {
     title: string;
@@ -14,18 +33,9 @@ export interface MolObj {
     chiral: boolean;
     stext: string;
   };
-  atoms: Array<{
-    x: number;
-    y: number;
-    z: number;
-    type: string;
-  }>;
-  bonds: Array<{
-    atom1: number;
-    atom2: number;
-    type: BondType;
-  }>;
-  molecule: {
+  atoms: AtomData[];
+  bonds: BondData[];
+  extents: {
     min: { x: number; y: number; z: number };
     max: { x: number; y: number; z: number };
     mid: { x: number; y: number; z: number };
@@ -71,7 +81,7 @@ export function readMolFile(molFile: string): MolObj {
 
   // parse out atoms and molecule bounds
   const atomsArray: MolObj["atoms"] = [];
-  const molecule = {
+  const extents = {
     min: { x: Infinity, y: Infinity, z: Infinity },
     max: { x: -Infinity, y: -Infinity, z: -Infinity },
     mid: { x: 0, y: 0, z: 0 },
@@ -79,29 +89,30 @@ export function readMolFile(molFile: string): MolObj {
 
   for (let i = 4; i < 4 + counts.atoms; i++) {
     const atom = {
+      id: i - counts.atoms - 3,
       x: Number(split[i].slice(0, 10).trim()),
       y: Number(split[i].slice(10, 20).trim()),
       z: Number(split[i].slice(20, 30).trim()),
-      type: split[i].slice(31, 33).trim(),
+      symbol: split[i].slice(31, 33).trim(),
     };
     atomsArray.push(atom);
 
-    molecule.min = {
-      x: Math.min(molecule.min.x, atom.x),
-      y: Math.min(molecule.min.y, atom.y),
-      z: Math.min(molecule.min.z, atom.z),
+    extents.min = {
+      x: Math.min(extents.min.x, atom.x),
+      y: Math.min(extents.min.y, atom.y),
+      z: Math.min(extents.min.z, atom.z),
     };
-    molecule.max = {
-      x: Math.max(molecule.max.x, atom.x),
-      y: Math.max(molecule.max.y, atom.y),
-      z: Math.max(molecule.max.z, atom.z),
+    extents.max = {
+      x: Math.max(extents.max.x, atom.x),
+      y: Math.max(extents.max.y, atom.y),
+      z: Math.max(extents.max.z, atom.z),
     };
   }
 
-  molecule.mid = {
-    x: (molecule.min.x + molecule.max.x) / 2,
-    y: (molecule.min.y + molecule.max.y) / 2,
-    z: (molecule.min.z + molecule.max.z) / 2,
+  extents.mid = {
+    x: (extents.min.x + extents.max.x) / 2,
+    y: (extents.min.y + extents.max.y) / 2,
+    z: (extents.min.z + extents.max.z) / 2,
   };
 
   // parse out bonds
@@ -120,11 +131,11 @@ export function readMolFile(molFile: string): MolObj {
     counts,
     atoms: atomsArray.map((atom) => ({
       ...atom,
-      x: atom.x - molecule.mid.x,
-      y: atom.y - molecule.mid.y,
-      z: atom.z - molecule.mid.z,
+      x: atom.x - extents.mid.x,
+      y: atom.y - extents.mid.y,
+      z: atom.z - extents.mid.z,
     })),
     bonds: bondsArray,
-    molecule,
+    extents,
   };
 }
