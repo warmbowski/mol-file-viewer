@@ -9,8 +9,7 @@ import {
 import { BondType } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { useAtom } from "jotai";
-import { noHAtom, hideSticksAtom, hideCloudsAtom } from "../state/app-state";
-import { ElectronClouds } from "./ElectronCloud";
+import { noHAtom } from "../state/app-state";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
@@ -21,14 +20,8 @@ interface StickBondProps {
 
 export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
   const [noH] = useAtom(noHAtom);
-  const [hideSticks] = useAtom(hideSticksAtom);
-  const [hideClouds] = useAtom(hideCloudsAtom);
 
   const stick = useMemo(() => {
-    if (hideSticks) {
-      return null;
-    }
-
     const { x: x1, y: y1, z: z1, symbol: symbol1 } = atoms[atom1 - 1];
     const { x: x2, y: y2, z: z2, symbol: symbol2 } = atoms[atom2 - 1];
 
@@ -59,18 +52,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     capsule.lookAt(end);
 
     return capsule;
-  }, [atom1, atom2, atoms, bondType, noH, hideSticks]);
+  }, [atom1, atom2, atoms, bondType, noH]);
 
-  return (
-    <group>
-      {stick && <primitive object={stick} />}
-      {!hideClouds && (
-        <ElectronClouds
-          atom1={atoms[atom1 - 1]}
-          atom2={atoms[atom2 - 1]}
-          bondType={bondType}
-        />
-      )}
-    </group>
-  );
+  return <group>{stick && <primitive object={stick} />}</group>;
 }

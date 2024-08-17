@@ -9,7 +9,7 @@ import { SphereGeometry } from "three";
 import { useAtom } from "jotai";
 import { noHAtom } from "../state/app-state";
 
-export function ElectronClouds({
+export function ElectronCloud({
   atom1,
   atom2,
   bondType,
