@@ -6,13 +6,13 @@ import { useAtom } from "jotai";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useRef } from "react";
 
-interface ElementProps extends MeshProps {
+interface BallElementProps extends MeshProps {
   symbol: string;
   radius?: number;
   color?: ColorRepresentation;
 }
 
-export function Element({ symbol, ...meshProps }: ElementProps) {
+export function BallElement({ symbol, ...meshProps }: BallElementProps) {
   const ref = useRef<RapierRigidBody>(null!);
   const [noH] = useAtom(noHAtom);
   const { radii, color } = ELEMENT_DATA_MAP.get(symbol) || {};
@@ -53,41 +53,41 @@ export function Element({ symbol, ...meshProps }: ElementProps) {
 }
 
 export function C(props: MeshProps) {
-  return <Element symbol="C" {...props} />;
+  return <BallElement symbol="C" {...props} />;
 }
 
 export function H(props: MeshProps) {
-  return <Element symbol="H" {...props} />;
+  return <BallElement symbol="H" {...props} />;
 }
 
 export function O(props: MeshProps) {
-  return <Element symbol="O" {...props} />;
+  return <BallElement symbol="O" {...props} />;
 }
 
 export function N(props: MeshProps) {
-  return <Element symbol="N" {...props} />;
+  return <BallElement symbol="N" {...props} />;
 }
 
 export function S(props: MeshProps) {
-  return <Element symbol="S" {...props} />;
+  return <BallElement symbol="S" {...props} />;
 }
 
 export function P(props: MeshProps) {
-  return <Element symbol="P" {...props} />;
+  return <BallElement symbol="P" {...props} />;
 }
 
 export function F(props: MeshProps) {
-  return <Element symbol="F" {...props} />;
+  return <BallElement symbol="F" {...props} />;
 }
 
 export function Cl(props: MeshProps) {
-  return <Element symbol="Cl" {...props} />;
+  return <BallElement symbol="Cl" {...props} />;
 }
 
 export function Br(props: MeshProps) {
-  return <Element symbol="Br" {...props} />;
+  return <BallElement symbol="Br" {...props} />;
 }
 
 export function I(props: MeshProps) {
-  return <Element symbol="I" {...props} />;
+  return <BallElement symbol="I" {...props} />;
 }

@@ -7,19 +7,19 @@ import {
   MeshBasicMaterial,
 } from "three";
 import { BondType } from "../constants";
-import { MolObj } from "../utils/readMolfile";
+import { MoleculeAtom } from "../utils/readMolfile";
 import { useAtom } from "jotai";
 import { noHAtom, hideSticksAtom, hideCloudsAtom } from "../state/app-state";
 import { ElectronClouds } from "./ElectronCloud";
 
-interface BondProps {
-  atoms: MolObj["atoms"];
+interface StickBondProps {
+  atoms: MoleculeAtom[];
   atom1: number;
   atom2: number;
   bondType: BondType;
 }
 
-export function Bond({ atoms, atom1, atom2, bondType }: BondProps) {
+export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
   const [noH] = useAtom(noHAtom);
   const [hideSticks] = useAtom(hideSticksAtom);
   const [hideClouds] = useAtom(hideCloudsAtom);
