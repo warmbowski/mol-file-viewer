@@ -4,12 +4,16 @@ import {
   CapsuleGeometry,
   LineCurve3,
   Mesh,
-  MeshBasicMaterial,
+  ShaderMaterial,
+  Color,
 } from "three";
-import { BondType } from "../constants";
+import { BondType, ELEMENT_DATA_MAP } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { useAtom } from "jotai";
 import { noHAtom } from "../state/app-state";
+
+import vertexShader from "../shaders/stickBondColorVertex.glsl?raw";
+import fragmentShader from "../shaders/stickBondColorFragment.glsl?raw";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
@@ -35,12 +39,28 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     const distance = line.getLength();
     const radius =
       bondType === BondType.AROMATIC ? bondType / 20 : bondType / 15;
-    const color = bondType === BondType.AROMATIC ? 0xffff00 : 0xffffff;
+    const color1 = new Color(ELEMENT_DATA_MAP.get(symbol1)?.color || 0xffffff);
+    const color2 = new Color(ELEMENT_DATA_MAP.get(symbol2)?.color || 0xffffff);
 
-    // Not happy with adding bonds imperitively, but it works for now.
-    // Couldn't figure out how to get rotation correct when using a
-    // declarative Capsule from @rect-three/drei.
-    const capsuleMaterial = new MeshBasicMaterial({ color });
+    /**
+     * Not happy with adding bonds imperitively, but it works for now.
+     * Couldn't figure out how to get rotation correct when using a
+     * declarative Capsule from @rect-three/drei.
+     * */
+
+    /**
+     * Mixed color ShaderMaterial from
+     * https://stackoverflow.com/questions/68552141/three-js-shapes-with-more-than-one-color
+     */
+    const capsuleMaterial = new ShaderMaterial({
+      uniforms: {
+        color1: { value: color1 },
+        color2: { value: color2 },
+        colorRatio: { value: 0.5 },
+      },
+      vertexShader,
+      fragmentShader,
+    });
     const capsuleGeometry = new CapsuleGeometry(radius, distance, 10, 20);
     capsuleGeometry.translate(0, distance / 2, 0);
     capsuleGeometry.rotateX(Math.PI / 2);

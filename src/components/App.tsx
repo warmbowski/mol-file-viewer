@@ -13,6 +13,7 @@ import {
   hideSticksAtom,
   hideCloudsAtom,
   moleculeAtom,
+  ballRadiusAtom,
 } from "../state/app-state";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
   const [, setHideBalls] = useAtom(hideBallsAtom);
   const [, setHideSticks] = useAtom(hideSticksAtom);
   const [, setHideClouds] = useAtom(hideCloudsAtom);
+  const [, setBallRadius] = useAtom(ballRadiusAtom);
   const [, setMolecule] = useAtom(moleculeAtom);
 
   const [, setOptions] = useControls(() => ({
@@ -29,16 +31,26 @@ export default function App() {
     hideBalls: { value: false, label: "Hide balls", onChange: setHideBalls },
     hideSticks: { value: false, label: "Hide sticks", onChange: setHideSticks },
     hideClouds: { value: false, label: "Hide clouds", onChange: setHideClouds },
+    ballRadius: {
+      value: 0,
+      label: "Ball radius",
+      options: {
+        Atomic: 0,
+        Covalent: 1,
+        "Van der Waals": 5,
+      },
+      onChange: setBallRadius,
+    },
     molecule: {
       value: "6324",
       label: "Pick molecule",
       options: {
-        "ethane (6324)": "6324",
-        "ethanol (682)": "682",
-        "benzoic acid (238)": "238",
-        "caffiene (2424)": "2424",
-        "catnip (141747)": "141747",
-        "dichlorodiphenyldichloroethylene (2927)": "2927",
+        "Ethane (6324)": "6324",
+        "Ethanol (682)": "682",
+        "Benzoic acid (238)": "238",
+        "Caffiene (2424)": "2424",
+        "Catnip (141747)": "141747",
+        "Dichlorodiphenyldichloroethylene (2927)": "2927",
         "?? (9683173)": "9683173",
         custom: "custom",
       },

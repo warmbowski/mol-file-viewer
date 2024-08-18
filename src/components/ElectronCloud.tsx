@@ -1,41 +1,33 @@
-import { BondType, ELEMENT_DATA_MAP } from "../constants";
-import { MolObj } from "../utils/readMolfile";
-
-import fragmentShader from "../shaders/fragment-2.glsl?raw";
-import vertexShader from "../shaders/vertex.glsl?raw";
-import { useMemo, useRef } from "react";
+import {
+  BondType,
+  ELEMENT_DATA_MAP,
+  // StericToHybridization,
+} from "../constants";
+import { MoleculeAtom } from "../utils/readMolfile";
+import { useRef } from "react";
 import { MeshProps } from "@react-three/fiber";
 import { SphereGeometry } from "three";
 import { useAtom } from "jotai";
 import { noHAtom } from "../state/app-state";
 
-export function ElectronCloud({
-  atom1,
-  atom2,
-  bondType,
-}: {
-  atom1: MolObj["atoms"][0];
-  atom2: MolObj["atoms"][0];
-  bondType: BondType;
-}) {
-  const [noH] = useAtom(noHAtom);
-  const rad1 = useMemo(
-    () => ELEMENT_DATA_MAP.get(atom1.symbol)?.radii[bondType],
-    [bondType, atom1.symbol]
-  );
-  const rad2 = useMemo(
-    () => ELEMENT_DATA_MAP.get(atom2.symbol)?.radii[bondType],
-    [bondType, atom2.symbol]
-  );
+import fragmentShader from "../shaders/electronCloudFragment.glsl?raw";
+import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
 
-  if (noH && (atom1.symbol === "H" || atom2.symbol === "H")) {
+export function ElectronCloud({ atom }: { atom: MoleculeAtom }) {
+  const [noH] = useAtom(noHAtom);
+  const elementData = ELEMENT_DATA_MAP.get(atom.symbol);
+  // const stericNumber = atom.bondedAtoms.length + (elementData?.lonePair || 0);
+  // const hybridization = StericToHybridization[stericNumber];
+  // console.log(hybridization);
+  const rad1 = elementData?.radii[BondType.SINGLE] || 0 + 0.1;
+
+  if (noH && atom.symbol === "H") {
     return null;
   }
 
   return (
     <group>
-      <SOrbital radius={rad1} position={[atom1.x, atom1.y, atom1.z]} />
-      <SOrbital radius={rad2} position={[atom2.x, atom2.y, atom2.z]} />
+      <SOrbital radius={rad1} position={[atom.x, atom.y, atom.z]} />
     </group>
   );
 }

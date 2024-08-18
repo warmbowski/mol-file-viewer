@@ -1,7 +1,7 @@
 import { MeshProps } from "@react-three/fiber";
 import { ColorRepresentation } from "three";
 import { BondType, ELEMENT_DATA_MAP } from "../constants";
-import { noHAtom } from "../state/app-state";
+import { ballRadiusAtom, noHAtom } from "../state/app-state";
 import { useAtom } from "jotai";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useRef } from "react";
@@ -15,9 +15,10 @@ interface BallElementProps extends MeshProps {
 export function BallElement({ symbol, ...meshProps }: BallElementProps) {
   const ref = useRef<RapierRigidBody>(null!);
   const [noH] = useAtom(noHAtom);
+  const [ballRadius] = useAtom(ballRadiusAtom);
   const { radii, color } = ELEMENT_DATA_MAP.get(symbol) || {};
 
-  const radius = radii?.[BondType.NONE] || 0.2;
+  const radius = radii?.[ballRadius as BondType] || 0.2;
 
   if (noH && symbol === "H") {
     return null;
