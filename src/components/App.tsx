@@ -14,7 +14,9 @@ import {
   hideCloudsAtom,
   moleculeAtom,
   ballRadiusAtom,
+  dropElementsAtom,
 } from "../state/app-state";
+import { RadiusType } from "../constants";
 
 export default function App() {
   const [debug, setDebug] = useAtom(debugAtom);
@@ -24,9 +26,16 @@ export default function App() {
   const [, setHideClouds] = useAtom(hideCloudsAtom);
   const [, setBallRadius] = useAtom(ballRadiusAtom);
   const [, setMolecule] = useAtom(moleculeAtom);
+  const [, setDoNotUse] = useAtom(dropElementsAtom);
 
   const [, setOptions] = useControls(() => ({
-    debug: { value: false, onChange: setDebug },
+    debug: { value: false, label: "Debug", onChange: setDebug },
+    doNotUse: {
+      value: false,
+      label: "Do not use",
+      onChange: setDoNotUse,
+      disabled: true,
+    },
     noH: { value: false, label: "No H atoms", onChange: setNoH },
     hideBalls: { value: false, label: "Hide balls", onChange: setHideBalls },
     hideSticks: { value: false, label: "Hide sticks", onChange: setHideSticks },
@@ -35,9 +44,10 @@ export default function App() {
       value: 0,
       label: "Ball radius",
       options: {
-        Atomic: 0,
-        Covalent: 1,
-        "Van der Waals": 5,
+        Fixed: RadiusType.Fixed,
+        Atomic: RadiusType.Atomic,
+        Covalent: RadiusType.CovalentSingle,
+        "Van der Waals": RadiusType.VanDerWaals,
       },
       onChange: setBallRadius,
     },

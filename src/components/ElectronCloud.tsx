@@ -1,5 +1,5 @@
 import {
-  BondType,
+  RadiusType,
   ELEMENT_DATA_MAP,
   // StericToHybridization,
 } from "../constants";
@@ -19,7 +19,9 @@ export function ElectronCloud({ atom }: { atom: MoleculeAtom }) {
   // const stericNumber = atom.bondedAtoms.length + (elementData?.lonePair || 0);
   // const hybridization = StericToHybridization[stericNumber];
   // console.log(hybridization);
-  const rad1 = elementData?.radii[BondType.SINGLE] || 0 + 0.1;
+  const radius = !Number.isNaN(elementData?.radii[RadiusType.CovalentSingle])
+    ? elementData?.radii[RadiusType.CovalentSingle]
+    : undefined;
 
   if (noH && atom.symbol === "H") {
     return null;
@@ -27,7 +29,7 @@ export function ElectronCloud({ atom }: { atom: MoleculeAtom }) {
 
   return (
     <group>
-      <SOrbital radius={rad1} position={[atom.x, atom.y, atom.z]} />
+      <SOrbital radius={radius} position={[atom.x, atom.y, atom.z]} />
     </group>
   );
 }

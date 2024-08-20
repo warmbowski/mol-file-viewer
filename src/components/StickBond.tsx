@@ -7,7 +7,8 @@ import {
   ShaderMaterial,
   Color,
 } from "three";
-import { BondType, ELEMENT_DATA_MAP } from "../constants";
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
+import { RadiusType, ELEMENT_DATA_MAP, STICK_RADIUS } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { useAtom } from "jotai";
 import { noHAtom } from "../state/app-state";
@@ -19,13 +20,13 @@ interface StickBondProps {
   atoms: MoleculeAtom[];
   atom1: number;
   atom2: number;
-  bondType: BondType;
+  bondType: RadiusType;
 }
 
 export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
   const [noH] = useAtom(noHAtom);
 
-  const stick = useMemo(() => {
+  const stickBond = useMemo(() => {
     const { x: x1, y: y1, z: z1, symbol: symbol1 } = atoms[atom1 - 1];
     const { x: x2, y: y2, z: z2, symbol: symbol2 } = atoms[atom2 - 1];
 
@@ -38,7 +39,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     const line = new LineCurve3(start, end);
     const distance = line.getLength();
     const radius =
-      bondType === BondType.AROMATIC ? bondType / 20 : bondType / 15;
+      bondType === RadiusType.Aromatic ? bondType / 20 : STICK_RADIUS;
     const color1 = new Color(ELEMENT_DATA_MAP.get(symbol1)?.color || 0xffffff);
     const color2 = new Color(ELEMENT_DATA_MAP.get(symbol2)?.color || 0xffffff);
 
@@ -52,7 +53,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
      * Mixed color ShaderMaterial from
      * https://stackoverflow.com/questions/68552141/three-js-shapes-with-more-than-one-color
      */
-    const capsuleMaterial = new ShaderMaterial({
+    const bondMaterial = new ShaderMaterial({
       uniforms: {
         color1: { value: color1 },
         color2: { value: color2 },
@@ -61,11 +62,25 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
       vertexShader,
       fragmentShader,
     });
-    const capsuleGeometry = new CapsuleGeometry(radius, distance, 10, 20);
-    capsuleGeometry.translate(0, distance / 2, 0);
-    capsuleGeometry.rotateX(Math.PI / 2);
 
-    const capsule = new Mesh(capsuleGeometry, capsuleMaterial);
+    const bondCapsules = [...Array(bondType).keys()].map((idx) => {
+      let translateX = 0;
+      if (bondType === RadiusType.CovalentDouble) {
+        translateX = idx === 0 ? radius * 1.5 : -radius * 1.5;
+      }
+      if (bondType === RadiusType.CovalentTriple) {
+        translateX = idx === 1 ? radius * 2.5 : idx === 2 ? -radius * 2.5 : 0;
+      }
+
+      const geom = new CapsuleGeometry(radius, distance, 10, 20);
+      geom.translate(translateX, distance / 2, 0).rotateX(Math.PI / 2);
+      return geom;
+    });
+
+    const bondGeometry = BufferGeometryUtils.mergeGeometries(bondCapsules);
+
+    const capsule = new Mesh(bondGeometry, bondMaterial);
+
     capsule.position.x = start.x;
     capsule.position.y = start.y;
     capsule.position.z = start.z;
@@ -74,5 +89,5 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     return capsule;
   }, [atom1, atom2, atoms, bondType, noH]);
 
-  return <group>{stick && <primitive object={stick} />}</group>;
+  return <group>{stickBond && <primitive object={stickBond} />}</group>;
 }
