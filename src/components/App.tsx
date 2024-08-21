@@ -18,6 +18,8 @@ import {
 } from "../state/app-state";
 import { RadiusType } from "../constants";
 
+import ghLogo from "../assets/github-mark-white.svg";
+
 export default function App() {
   const [debug, setDebug] = useAtom(debugAtom);
   const [noH, setNoH] = useAtom(noHAtom);
@@ -28,60 +30,64 @@ export default function App() {
   const [molecule, setMolecule] = useAtom(moleculeAtom);
   const [doNotUse, setDoNotUse] = useAtom(dropElementsAtom);
 
-  const [, setOptions] = useControls(() => ({
-    debug: { value: debug, label: "Debug", onChange: setDebug },
-    noH: { value: noH, label: "No H atoms", onChange: setNoH },
-    hideBalls: {
-      value: hideBalls,
-      label: "Hide balls",
-      onChange: setHideBalls,
-    },
-    hideSticks: {
-      value: hideSticks,
-      label: "Hide sticks",
-      onChange: setHideSticks,
-    },
-    hideClouds: {
-      value: hideClouds,
-      label: "Hide clouds",
-      onChange: setHideClouds,
-    },
-    ballRadius: {
-      value: ballRadius,
-      label: "Ball radius",
-      options: {
-        Fixed: RadiusType.Fixed,
-        Atomic: RadiusType.Atomic,
-        Covalent: RadiusType.CovalentSingle,
-        "Van der Waals": RadiusType.VanDerWaals,
+  const [, setOptions] = useControls(
+    "Options",
+    () => ({
+      debug: { value: debug, label: "Debug", onChange: setDebug },
+      noH: { value: noH, label: "No H atoms", onChange: setNoH },
+      hideBalls: {
+        value: hideBalls,
+        label: "Hide balls",
+        onChange: setHideBalls,
       },
-      onChange: setBallRadius,
-    },
-    molecule: {
-      value: molecule,
-      label: "Pick molecule",
-      options: {
-        "Ethane (6324)": "6324",
-        "Ethanol (682)": "682",
-        "Benzoic acid (238)": "238",
-        "Caffiene (2424)": "2424",
-        "Catnip (141747)": "141747",
-        "Dichlorodiphenyldichloroethylene (2927)": "2927",
-        "?? (9683173)": "9683173",
-        custom: "custom",
+      hideSticks: {
+        value: hideSticks,
+        label: "Hide sticks",
+        onChange: setHideSticks,
       },
-      onChange: setMolecule,
-    },
-    upload: button(() => document.getElementById("file-input")?.click(), {
-      disabled: false,
+      hideClouds: {
+        value: hideClouds,
+        label: "Hide clouds",
+        onChange: setHideClouds,
+      },
+      ballRadius: {
+        value: ballRadius,
+        label: "Ball radius",
+        options: {
+          Fixed: RadiusType.Fixed,
+          Atomic: RadiusType.Atomic,
+          Covalent: RadiusType.CovalentSingle,
+          "Van der Waals": RadiusType.VanDerWaals,
+        },
+        onChange: setBallRadius,
+      },
+      molecule: {
+        value: molecule,
+        label: "Pick molecule",
+        options: {
+          "Ethane (6324)": "6324",
+          "Ethanol (682)": "682",
+          "Benzoic acid (238)": "238",
+          "Caffiene (2424)": "2424",
+          "Catnip (141747)": "141747",
+          "Dichlorodiphenyldichloroethylene (2927)": "2927",
+          "?? (9683173)": "9683173",
+          custom: "custom",
+        },
+        onChange: setMolecule,
+      },
+      upload: button(() => document.getElementById("file-input")?.click(), {
+        disabled: false,
+      }),
+      doNotUse: {
+        value: doNotUse,
+        label: "Do not use",
+        onChange: setDoNotUse,
+        disabled: true,
+      },
     }),
-    doNotUse: {
-      value: doNotUse,
-      label: "Do not use",
-      onChange: setDoNotUse,
-      disabled: true,
-    },
-  }));
+    { collapsed: window.innerWidth <= 768 ? true : false }
+  );
 
   const uploadMolFile = useUploadMolecule();
 
@@ -117,6 +123,16 @@ export default function App() {
           <color attach="background" args={[0x333533]} />
         </Environment>
       </Canvas>
+      <div className="repo-link">
+        <img src={ghLogo} alt="GitHub logo" style={{ height: "1.5em" }} />
+        <a
+          href="https://github.com/warmbowski/mol-file-viewer"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Mol File Viewer repository
+        </a>
+      </div>
       <input
         type="file"
         id="file-input"

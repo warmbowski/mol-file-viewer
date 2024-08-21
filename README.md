@@ -2,6 +2,8 @@
 
 A rewrite of [LiamOsler/Three-Molecules](https://github.com/LiamOsler/Three-Molecules) declaritively using `@react-three/fiber` and Typescript in a Vite meta-framework.
 
+Demo: https://mol-file-viewer.netlify.app
+
 ---
 
 # React + TypeScript + Vite

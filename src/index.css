@@ -14,3 +14,23 @@ body,
 body {
   background-color: #111;
 }
+
+a {
+  text-decoration: underline;
+  color: inherit;
+}
+
+.repo-link {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 1rem;
+  color: white;
+  display: flex;
+  gap: 8px;
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  line-height: 1.5;
+  z-index: 100;
+}
