@@ -44,8 +44,6 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
           color={color}
           roughness={0.5}
           metalness={0.5}
-          // transparent
-          // opacity={0.75}
           // depthTest
           // depthWrite
         />
