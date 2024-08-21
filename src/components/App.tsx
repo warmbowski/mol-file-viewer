@@ -20,28 +20,34 @@ import { RadiusType } from "../constants";
 
 export default function App() {
   const [debug, setDebug] = useAtom(debugAtom);
-  const [, setNoH] = useAtom(noHAtom);
-  const [, setHideBalls] = useAtom(hideBallsAtom);
-  const [, setHideSticks] = useAtom(hideSticksAtom);
-  const [, setHideClouds] = useAtom(hideCloudsAtom);
-  const [, setBallRadius] = useAtom(ballRadiusAtom);
-  const [, setMolecule] = useAtom(moleculeAtom);
-  const [, setDoNotUse] = useAtom(dropElementsAtom);
+  const [noH, setNoH] = useAtom(noHAtom);
+  const [hideBalls, setHideBalls] = useAtom(hideBallsAtom);
+  const [hideSticks, setHideSticks] = useAtom(hideSticksAtom);
+  const [hideClouds, setHideClouds] = useAtom(hideCloudsAtom);
+  const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
+  const [molecule, setMolecule] = useAtom(moleculeAtom);
+  const [doNotUse, setDoNotUse] = useAtom(dropElementsAtom);
 
   const [, setOptions] = useControls(() => ({
-    debug: { value: false, label: "Debug", onChange: setDebug },
-    doNotUse: {
-      value: false,
-      label: "Do not use",
-      onChange: setDoNotUse,
-      disabled: true,
+    debug: { value: debug, label: "Debug", onChange: setDebug },
+    noH: { value: noH, label: "No H atoms", onChange: setNoH },
+    hideBalls: {
+      value: hideBalls,
+      label: "Hide balls",
+      onChange: setHideBalls,
     },
-    noH: { value: false, label: "No H atoms", onChange: setNoH },
-    hideBalls: { value: false, label: "Hide balls", onChange: setHideBalls },
-    hideSticks: { value: false, label: "Hide sticks", onChange: setHideSticks },
-    hideClouds: { value: false, label: "Hide clouds", onChange: setHideClouds },
+    hideSticks: {
+      value: hideSticks,
+      label: "Hide sticks",
+      onChange: setHideSticks,
+    },
+    hideClouds: {
+      value: hideClouds,
+      label: "Hide clouds",
+      onChange: setHideClouds,
+    },
     ballRadius: {
-      value: 0,
+      value: ballRadius,
       label: "Ball radius",
       options: {
         Fixed: RadiusType.Fixed,
@@ -52,7 +58,7 @@ export default function App() {
       onChange: setBallRadius,
     },
     molecule: {
-      value: "6324",
+      value: molecule,
       label: "Pick molecule",
       options: {
         "Ethane (6324)": "6324",
@@ -69,6 +75,12 @@ export default function App() {
     upload: button(() => document.getElementById("file-input")?.click(), {
       disabled: false,
     }),
+    doNotUse: {
+      value: doNotUse,
+      label: "Do not use",
+      onChange: setDoNotUse,
+      disabled: true,
+    },
   }));
 
   const uploadMolFile = useUploadMolecule();
