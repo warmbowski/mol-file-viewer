@@ -4,17 +4,14 @@ import {
   CapsuleGeometry,
   LineCurve3,
   Mesh,
-  ShaderMaterial,
   Color,
+  MeshStandardMaterial,
 } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 import { RadiusType, ELEMENT_DATA_MAP, STICK_RADIUS } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { useAtom } from "jotai";
 import { noHAtom } from "../state/app-state";
-
-import vertexShader from "../shaders/stickBondColorVertex.glsl?raw";
-import fragmentShader from "../shaders/stickBondColorFragment.glsl?raw";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
@@ -50,18 +47,38 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
      * */
 
     /**
-     * Mixed color ShaderMaterial from
-     * https://stackoverflow.com/questions/68552141/three-js-shapes-with-more-than-one-color
+     * Mixed color extended MeshStandardMaterial from
+     * https://codepen.io/prisoner849/pen/OJwqxBy
      */
-    const bondMaterial = new ShaderMaterial({
-      uniforms: {
-        color1: { value: color1 },
-        color2: { value: color2 },
-        colorRatio: { value: 0.5 },
+    const bondMaterial = new MeshStandardMaterial({
+      metalness: 0.5,
+      roughness: 0.5,
+      defines: { USE_UV: "" },
+      userData: {
+        uniforms: {
+          color1: { value: color1 },
+          color2: { value: color2 },
+          colorRatio: { value: 0.5 },
+        },
       },
-      vertexShader,
-      fragmentShader,
     });
+    bondMaterial.onBeforeCompile = (shader) => {
+      shader.uniforms.color1 = { value: color1 };
+      shader.uniforms.color2 = { value: color2 };
+      shader.uniforms.colorRatio = { value: 0.5 };
+      shader.fragmentShader = `
+        uniform vec3 color1;
+        uniform vec3 color2;
+        uniform float colorRatio;
+        ${shader.fragmentShader}
+      `.replace(
+        `#include <color_fragment>`,
+        `
+        #include <color_fragment>
+        diffuseColor.rgb = mix(color1, color2, step(colorRatio, vUv.y));
+      `
+      );
+    };
 
     const bondCapsules = [...Array(bondType).keys()].map((idx) => {
       let translateX = 0;
