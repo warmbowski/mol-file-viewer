@@ -20,11 +20,9 @@ export function AtomicCloud({ atom }: { atom: MoleculeAtom }) {
   }
 
   return (
-    <group>
-      <SOrbital
-        radius={elementData?.radii[RadiusType.CovalentSingle]}
-        position={[atom.x, atom.y, atom.z]}
-      />
-    </group>
+    <SOrbital
+      radius={elementData?.radii[RadiusType.CovalentSingle]}
+      position={[atom.x, atom.y, atom.z]}
+    />
   );
 }

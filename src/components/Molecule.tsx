@@ -5,7 +5,7 @@ import { useGetMolecule } from "../api/hooks/useGetMolecule";
 import { useAtom } from "jotai";
 import {
   hideBallsAtom,
-  hideCloudsAtom,
+  cloudTypeAtom,
   hideSticksAtom,
   moleculeAtom,
 } from "../state/app-state";
@@ -18,7 +18,7 @@ export function Molecule() {
   const [molecule] = useAtom(moleculeAtom);
   const [hideBalls] = useAtom(hideBallsAtom);
   const [hideSticks] = useAtom(hideSticksAtom);
-  const [hideClouds] = useAtom(hideCloudsAtom);
+  const [cloudType] = useAtom(cloudTypeAtom);
 
   const { data, error, isFetching } = useGetMolecule(molecule);
   const atoms = useMemo(() => data?.atoms || [], [data?.atoms]);
@@ -33,8 +33,8 @@ export function Molecule() {
         <group>
           {!hideSticks && <StickBonds atoms={atoms} bonds={bonds} />}
           {!hideBalls && <BallElements atoms={atoms} />}
-          {!hideClouds && <AtomicClouds atoms={atoms} />}
-          {<VanDerWaalsClouds atoms={atoms} />}
+          {cloudType === "atomic" && <AtomicClouds atoms={atoms} />}
+          {cloudType === "vanderwaals" && <VanDerWaalsClouds atoms={atoms} />}
         </group>
       )}
     </>

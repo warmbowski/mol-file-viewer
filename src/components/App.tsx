@@ -11,10 +11,10 @@ import {
   noHAtom,
   hideBallsAtom,
   hideSticksAtom,
-  hideCloudsAtom,
   moleculeAtom,
   ballRadiusAtom,
   dropElementsAtom,
+  cloudTypeAtom,
 } from "../state/app-state";
 import { RadiusType } from "../constants";
 
@@ -25,7 +25,7 @@ export default function App() {
   const [noH, setNoH] = useAtom(noHAtom);
   const [hideBalls, setHideBalls] = useAtom(hideBallsAtom);
   const [hideSticks, setHideSticks] = useAtom(hideSticksAtom);
-  const [hideClouds, setHideClouds] = useAtom(hideCloudsAtom);
+  const [cloudType, setCloudType] = useAtom(cloudTypeAtom);
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [molecule, setMolecule] = useAtom(moleculeAtom);
   const [doNotUse, setDoNotUse] = useAtom(dropElementsAtom);
@@ -45,10 +45,15 @@ export default function App() {
         label: "Hide sticks",
         onChange: setHideSticks,
       },
-      hideClouds: {
-        value: hideClouds,
-        label: "Hide clouds",
-        onChange: setHideClouds,
+      cloudType: {
+        value: cloudType,
+        label: "Cloud type",
+        options: {
+          None: "none",
+          Atomic: "atomic",
+          "Van der Waals": "vanderwaals",
+        },
+        onChange: setCloudType,
       },
       ballRadius: {
         value: ballRadius,

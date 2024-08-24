@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { MeshProps } from "@react-three/fiber";
 import { SphereGeometry } from "three";
 
-import fragmentShader from "../shaders/electronCloudFragment.glsl?raw";
+import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
 
 interface OrbitalProps extends MeshProps {
@@ -12,18 +12,16 @@ interface OrbitalProps extends MeshProps {
 
 export function SOrbital({ radius, position }: OrbitalProps) {
   return (
-    <group>
-      <mesh position={position} renderOrder={0.5}>
-        <sphereGeometry args={[radius, 32, 32]} />
-        <shaderMaterial
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          transparent
-          depthTest
-          depthWrite
-        />
-      </mesh>
-    </group>
+    <mesh position={position} renderOrder={0.5}>
+      <sphereGeometry args={[radius, 32, 32]} />
+      <shaderMaterial
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        transparent
+        depthTest
+        depthWrite
+      />
+    </mesh>
   );
 }
 
@@ -37,7 +35,6 @@ export function POrbital({ radius, position }: OrbitalProps) {
         <shaderMaterial
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
-          opacity={0.5}
           transparent
           depthTest
           depthWrite
