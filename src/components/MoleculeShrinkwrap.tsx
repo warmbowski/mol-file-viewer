@@ -1,9 +1,13 @@
 import { useMemo } from "react";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
-import { ELEMENT_DATA_MAP, RadiusType } from "../constants";
+import {
+  DEFAULT_CLOUD_COLOR,
+  ELEMENT_DATA_MAP,
+  RadiusType,
+} from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
-import { Mesh, ShaderMaterial, SphereGeometry, Vector3 } from "three";
+import { Color, Mesh, ShaderMaterial, SphereGeometry, Vector3 } from "three";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -34,6 +38,9 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
     const convexGeometry = new ConvexGeometry(points);
 
     const cloudMaterial = new ShaderMaterial({
+      uniforms: {
+        color: { value: new Color(DEFAULT_CLOUD_COLOR) },
+      },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       transparent: true,

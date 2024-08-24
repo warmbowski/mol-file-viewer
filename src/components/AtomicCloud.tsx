@@ -23,6 +23,7 @@ export function AtomicCloud({ atom }: { atom: MoleculeAtom }) {
     <SOrbital
       radius={elementData?.radii[RadiusType.CovalentSingle]}
       position={[atom.x, atom.y, atom.z]}
+      color={elementData?.color}
     />
   );
 }

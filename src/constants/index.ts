@@ -11,6 +11,7 @@ export enum RadiusType {
 export const FIXED_RADIUS = 0.3;
 export const FIXED_RADIUS_H = 0.2;
 export const STICK_RADIUS = 0.06;
+export const DEFAULT_CLOUD_COLOR = 0x4d99ff;
 
 export enum StericToHybridization {
   sp = 2,

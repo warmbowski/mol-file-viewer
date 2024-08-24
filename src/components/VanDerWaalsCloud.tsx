@@ -1,6 +1,10 @@
-import { ELEMENT_DATA_MAP, RadiusType } from "../constants";
+import {
+  DEFAULT_CLOUD_COLOR,
+  ELEMENT_DATA_MAP,
+  RadiusType,
+} from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
-import { SphereGeometry } from "three";
+import { Color, SphereGeometry } from "three";
 import { useMemo } from "react";
 import { Addition, Base, Geometry } from "@react-three/csg";
 
@@ -32,10 +36,13 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
       <Geometry>
         <Base name="base" geometry={cloudGeometries[0]} />
         {cloudGeometries.map((geo, idx) => (
-          <Addition name={`atom${idx}-cloud`} geometry={geo} />
+          <Addition key={`${idx}`} name={`atom${idx}-cloud`} geometry={geo} />
         ))}
       </Geometry>
       <shaderMaterial
+        uniforms={{
+          color: { value: new Color(DEFAULT_CLOUD_COLOR) },
+        }}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         transparent={true}
