@@ -3,7 +3,11 @@ import { RadiusType } from "../constants";
 
 export type CloudType = "none" | "atomic" | "vanderwaals";
 
-const atomWithLocalStorage = <T>(key: string, initialValue: T) => {
+const atomWithLocalStorage = <T>(
+  key: string,
+  initialValue: T,
+  doNotPersistValues: T[] = []
+) => {
   const getInitialValue = () => {
     const item = localStorage.getItem(key);
     if (item !== null) {
@@ -18,7 +22,9 @@ const atomWithLocalStorage = <T>(key: string, initialValue: T) => {
       const nextValue =
         typeof update === "function" ? update(get(baseAtom)) : update;
       set(baseAtom, nextValue);
-      localStorage.setItem(key, JSON.stringify(nextValue));
+      if (!doNotPersistValues.includes(nextValue)) {
+        localStorage.setItem(key, JSON.stringify(nextValue));
+      }
     }
   );
   return derivedAtom;
@@ -38,7 +44,9 @@ export const ballRadiusAtom = atomWithLocalStorage<RadiusType>(
   "nfv-ballRadius",
   0
 );
-export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324");
+export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324", [
+  "custom",
+]);
 
 // Not persisted
 export const dropElementsAtom = atom(false);

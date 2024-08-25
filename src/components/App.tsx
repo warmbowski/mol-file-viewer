@@ -106,7 +106,7 @@ export default function App() {
 
   return (
     <>
-      <Canvas camera={{ near: 0.1, far: 250, position: [0, 0, 13], fov: 25 }}>
+      <Canvas camera={{ position: [0, 0, 13], fov: 25, near: 0.1, far: 250 }}>
         {debug && <axesHelper args={[5]} />}
         <OrbitControls />
         <ambientLight intensity={Math.PI} />
