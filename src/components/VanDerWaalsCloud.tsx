@@ -7,6 +7,8 @@ import { MoleculeAtom } from "../utils/readMolfile";
 import { Color, SphereGeometry } from "three";
 import { useMemo } from "react";
 import { Addition, Base, Geometry } from "@react-three/csg";
+import { debugAtom } from "../state/app-state";
+import { useAtom } from "jotai";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -16,14 +18,16 @@ interface VanDerWaalsCloudsProps {
 }
 
 export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
+  const [debug] = useAtom(debugAtom);
+
   const cloudGeometries = useMemo(
     () =>
       atoms.map((atom) => {
         const elementData = ELEMENT_DATA_MAP.get(atom.symbol);
         const geom = new SphereGeometry(
           elementData?.radii[RadiusType.VanDerWaals],
-          32,
-          32
+          24,
+          24
         );
         geom.translate(atom.x, atom.y, atom.z);
         return geom;
@@ -40,6 +44,7 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
         ))}
       </Geometry>
       <shaderMaterial
+        wireframe={debug}
         uniforms={{
           color: { value: new Color(DEFAULT_CLOUD_COLOR) },
         }}

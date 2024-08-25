@@ -11,7 +11,7 @@ import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 import { RadiusType, ELEMENT_DATA_MAP, STICK_RADIUS } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { useAtom } from "jotai";
-import { noHAtom } from "../state/app-state";
+import { debugAtom, noHAtom } from "../state/app-state";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
@@ -22,6 +22,7 @@ interface StickBondProps {
 
 export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
   const [noH] = useAtom(noHAtom);
+  const [debug] = useAtom(debugAtom);
 
   const stickBond = useMemo(() => {
     const { x: x1, y: y1, z: z1, symbol: symbol1 } = atoms[atom1 - 1];
@@ -51,6 +52,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
      * https://codepen.io/prisoner849/pen/OJwqxBy
      */
     const bondMaterial = new MeshStandardMaterial({
+      wireframe: debug,
       metalness: 0.5,
       roughness: 0.5,
       defines: { USE_UV: "" },
@@ -89,7 +91,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
         translateX = idx === 1 ? radius * 2.5 : idx === 2 ? -radius * 2.5 : 0;
       }
 
-      const geom = new CapsuleGeometry(radius, distance, 10, 20);
+      const geom = new CapsuleGeometry(radius, distance, 10, 10);
       geom.translate(translateX, distance / 2, 0).rotateX(Math.PI / 2);
       return geom;
     });
@@ -104,7 +106,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     capsule.lookAt(end);
 
     return capsule;
-  }, [atom1, atom2, atoms, bondType, noH]);
+  }, [atom1, atom2, atoms, bondType, debug, noH]);
 
   return <group>{stickBond && <primitive object={stickBond} />}</group>;
 }

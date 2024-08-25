@@ -1,7 +1,12 @@
 import { MeshProps } from "@react-three/fiber";
 import { ColorRepresentation } from "three";
 import { ELEMENT_DATA_MAP, FIXED_RADIUS } from "../constants";
-import { ballRadiusAtom, dropElementsAtom, noHAtom } from "../state/app-state";
+import {
+  ballRadiusAtom,
+  debugAtom,
+  dropElementsAtom,
+  noHAtom,
+} from "../state/app-state";
 import { useAtom } from "jotai";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useRef } from "react";
@@ -15,6 +20,8 @@ interface BallElementProps extends MeshProps {
 export function BallElement({ symbol, ...meshProps }: BallElementProps) {
   const ref = useRef<RapierRigidBody>(null!);
   const [noH] = useAtom(noHAtom);
+  const [debug] = useAtom(debugAtom);
+
   const [ballRadius] = useAtom(ballRadiusAtom);
   const [dropElements] = useAtom(dropElementsAtom);
   const { radii, color } = ELEMENT_DATA_MAP.get(symbol) || {};
@@ -39,13 +46,12 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
       colliders={"ball"}
     >
       <mesh {...meshProps}>
-        <sphereGeometry args={[radius, 32, 32]} />
+        <sphereGeometry args={[radius, 24, 24]} />
         <meshStandardMaterial
+          wireframe={debug}
           color={color}
           roughness={0.5}
           metalness={0.5}
-          // depthTest
-          // depthWrite
         />
       </mesh>
     </RigidBody>

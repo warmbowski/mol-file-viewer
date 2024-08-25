@@ -22,8 +22,8 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
       const elementData = ELEMENT_DATA_MAP.get(atom.symbol);
       const geom = new SphereGeometry(
         elementData?.radii[RadiusType.VanDerWaals],
-        32,
-        32
+        20,
+        20
       );
       geom.translate(atom.x, atom.y, atom.z);
       return geom;
