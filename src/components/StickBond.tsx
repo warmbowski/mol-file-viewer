@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useAtom } from "jotai";
 import {
   Vector3,
   CapsuleGeometry,
@@ -8,16 +9,16 @@ import {
   MeshStandardMaterial,
 } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
-import { RadiusType, ELEMENT_DATA_MAP, STICK_RADIUS } from "../constants";
+import { STICK_RADIUS, STICK_RADIUS_AROMATIC } from "../constants";
+import { periodicTableBySymbolMap } from "../constants/periodicTable";
 import { MoleculeAtom } from "../utils/readMolfile";
-import { useAtom } from "jotai";
 import { debugAtom, noHAtom } from "../state/app-state";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
   atom1: number;
   atom2: number;
-  bondType: RadiusType;
+  bondType: number;
 }
 
 export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
@@ -36,10 +37,9 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     const end = new Vector3(x2, y2, z2);
     const line = new LineCurve3(start, end);
     const distance = line.getLength();
-    const radius =
-      bondType === RadiusType.Aromatic ? bondType / 20 : STICK_RADIUS;
-    const color1 = new Color(ELEMENT_DATA_MAP.get(symbol1)?.color || 0xffffff);
-    const color2 = new Color(ELEMENT_DATA_MAP.get(symbol2)?.color || 0xffffff);
+    const radius = bondType === 4 ? STICK_RADIUS_AROMATIC : STICK_RADIUS;
+    const color1 = new Color(periodicTableBySymbolMap.get(symbol1)?.color);
+    const color2 = new Color(periodicTableBySymbolMap.get(symbol2)?.color);
 
     /**
      * Not happy with adding bonds imperitively, but it works for now.
@@ -84,10 +84,10 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
 
     const bondCapsules = [...Array(bondType).keys()].map((idx) => {
       let translateX = 0;
-      if (bondType === RadiusType.CovalentDouble) {
+      if (bondType === 2) {
         translateX = idx === 0 ? radius * 1.5 : -radius * 1.5;
       }
-      if (bondType === RadiusType.CovalentTriple) {
+      if (bondType === 3) {
         translateX = idx === 1 ? radius * 2.5 : idx === 2 ? -radius * 2.5 : 0;
       }
 

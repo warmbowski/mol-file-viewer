@@ -1,20 +1,18 @@
+import { useMemo, useRef } from "react";
+import { useAtom } from "jotai";
+import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { MeshProps } from "@react-three/fiber";
-import { ColorRepresentation } from "three";
-import { ELEMENT_DATA_MAP, FIXED_RADIUS } from "../constants";
+import { Color } from "three";
 import {
   ballRadiusAtom,
   debugAtom,
   dropElementsAtom,
   noHAtom,
 } from "../state/app-state";
-import { useAtom } from "jotai";
-import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { useRef } from "react";
+import { periodicTableBySymbolMap } from "../constants/periodicTable";
 
 interface BallElementProps extends MeshProps {
   symbol: string;
-  radius?: number;
-  color?: ColorRepresentation;
 }
 
 export function BallElement({ symbol, ...meshProps }: BallElementProps) {
@@ -24,11 +22,15 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
 
   const [ballRadius] = useAtom(ballRadiusAtom);
   const [dropElements] = useAtom(dropElementsAtom);
-  const { radii, color } = ELEMENT_DATA_MAP.get(symbol) || {};
 
-  const radius = !Number.isNaN(radii?.[ballRadius])
-    ? radii?.[ballRadius]
-    : FIXED_RADIUS;
+  const { color, radius } = useMemo(() => {
+    const elementData = periodicTableBySymbolMap.get(symbol);
+
+    return {
+      color: elementData?.color,
+      radius: elementData?.radius?.[ballRadius],
+    };
+  }, [ballRadius, symbol]);
 
   if (noH && symbol === "H") {
     return null;
@@ -49,7 +51,7 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
         <sphereGeometry args={[radius, 24, 24]} />
         <meshStandardMaterial
           wireframe={debug}
-          color={color}
+          color={new Color(color)}
           roughness={0.5}
           metalness={0.5}
         />

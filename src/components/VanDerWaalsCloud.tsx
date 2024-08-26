@@ -1,14 +1,11 @@
-import {
-  DEFAULT_CLOUD_COLOR,
-  ELEMENT_DATA_MAP,
-  RadiusType,
-} from "../constants";
-import { MoleculeAtom } from "../utils/readMolfile";
-import { Color, SphereGeometry } from "three";
 import { useMemo } from "react";
-import { Addition, Base, Geometry } from "@react-three/csg";
-import { debugAtom } from "../state/app-state";
 import { useAtom } from "jotai";
+import { Color, SphereGeometry } from "three";
+import { Addition, Base, Geometry } from "@react-three/csg";
+import { DEFAULT_CLOUD_COLOR } from "../constants";
+import { periodicTableBySymbolMap } from "../constants/periodicTable";
+import { MoleculeAtom } from "../utils/readMolfile";
+import { debugAtom } from "../state/app-state";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -23,9 +20,9 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
   const cloudGeometries = useMemo(
     () =>
       atoms.map((atom) => {
-        const elementData = ELEMENT_DATA_MAP.get(atom.symbol);
+        const elementData = periodicTableBySymbolMap.get(atom.symbol);
         const geom = new SphereGeometry(
-          elementData?.radii[RadiusType.VanDerWaals],
+          elementData?.radius.vanderwaals,
           24,
           24
         );
@@ -36,7 +33,7 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
   );
 
   return (
-    <mesh>
+    <mesh scale={[1.01, 1.01, 1.01]}>
       <Geometry>
         <Base name="base" geometry={cloudGeometries[0]} />
         {cloudGeometries.map((geo, idx) => (

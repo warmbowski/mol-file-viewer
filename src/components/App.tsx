@@ -1,11 +1,11 @@
+import { useCallback } from "react";
+import { useAtom } from "jotai";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { button, useControls, Leva } from "leva";
 import { Molecule } from "./Molecule";
 import { useUploadMolecule } from "../api/hooks/useUploadMolecule";
-import { useCallback } from "react";
-import { useAtom } from "jotai";
 import {
   debugAtom,
   noHAtom,
@@ -16,7 +16,6 @@ import {
   dropElementsAtom,
   cloudTypeAtom,
 } from "../state/app-state";
-import { RadiusType } from "../constants";
 
 import ghLogo from "../assets/github-mark-white.svg";
 
@@ -57,10 +56,11 @@ export default function App() {
       value: ballRadius,
       label: "Ball radius",
       options: {
-        Fixed: RadiusType.Fixed,
-        Atomic: RadiusType.Atomic,
-        Covalent: RadiusType.CovalentSingle,
-        "Van der Waals": RadiusType.VanDerWaals,
+        Fixed: "fixed",
+        "Atomic (Calc)": "calculated",
+        "Atomic (Emper)": "empirical",
+        Covalent: "covalent",
+        "Van der Waals": "vanderwaals",
       },
       onChange: setBallRadius,
     },
@@ -74,7 +74,8 @@ export default function App() {
         "Caffiene (2424)": "2424",
         "Catnip (141747)": "141747",
         "Dichlorodiphenyldichloroethylene (2927)": "2927",
-        "?? (9683173)": "9683173",
+        "Silicon Compound (64-17-5)": "64-17-5",
+        "Phosphazene Compound (C60H42N3O6P3)": "C60H42N3O6P3",
         custom: "custom",
       },
       onChange: setMolecule,

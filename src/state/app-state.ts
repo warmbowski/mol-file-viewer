@@ -1,6 +1,7 @@
 import { atom } from "jotai";
-import { RadiusType } from "../constants";
+import { ElementData } from "periodic-table-data-complete";
 
+export type RadiusType = keyof ElementData["radius"] | "fixed";
 export type CloudType = "none" | "atomic" | "vanderwaals";
 
 const atomWithLocalStorage = <T>(
@@ -42,7 +43,7 @@ export const cloudTypeAtom = atomWithLocalStorage<CloudType>(
 );
 export const ballRadiusAtom = atomWithLocalStorage<RadiusType>(
   "nfv-ballRadius",
-  0
+  "fixed"
 );
 export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324", [
   "custom",
