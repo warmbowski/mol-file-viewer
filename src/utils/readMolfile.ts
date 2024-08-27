@@ -1,5 +1,3 @@
-import { RadiusType } from "../constants";
-
 export interface MoleculeAtom {
   id: number;
   x: number;
@@ -13,7 +11,7 @@ export interface MoleculeBond {
   id: number;
   atom1: number;
   atom2: number;
-  type: RadiusType;
+  type: number;
 }
 
 export interface MoleculeExtents {
