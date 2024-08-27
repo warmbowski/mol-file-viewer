@@ -1,7 +1,8 @@
 import { atom } from "jotai";
-import { ElementData } from "periodic-table-data-complete";
+import { ElementData, PeriodicTable } from "../constants/periodicTable";
+import { ColorTheme } from "../constants/colorThemes.noformat";
 
-export type RadiusType = keyof ElementData["radius"] | "fixed";
+export type RadiusType = keyof ElementData["radius"];
 export type CloudType = "none" | "atomic" | "vanderwaals";
 
 const atomWithLocalStorage = <T>(
@@ -36,6 +37,10 @@ export const debugAtom = atomWithLocalStorage("nfv-debug", false);
 export const noHAtom = atomWithLocalStorage("nfv-noHAtom", false);
 export const hideBallsAtom = atomWithLocalStorage("nfv-hideBalls", false);
 export const hideSticksAtom = atomWithLocalStorage("nfv-hideSticks", false);
+export const colorThemeAtom = atomWithLocalStorage<ColorTheme>(
+  "nfv-colorTheme",
+  ColorTheme.ALT
+);
 // export const hideCloudsAtom = atomWithLocalStorage("nfv-hadeClouds", false);
 export const cloudTypeAtom = atomWithLocalStorage<CloudType>(
   "nfv-cloud",
@@ -51,3 +56,9 @@ export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324", [
 
 // Not persisted
 export const dropElementsAtom = atom(false);
+
+// derived
+export const periodicTableAtom = atom((get) => {
+  const ct = get(colorThemeAtom);
+  return new PeriodicTable(ct);
+});

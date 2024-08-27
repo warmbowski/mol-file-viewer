@@ -11,6 +11,7 @@ import {
   ballRadiusAtom,
   dropElementsAtom,
   cloudTypeAtom,
+  colorThemeAtom,
 } from "../state/app-state";
 
 import ghLogo from "../assets/github-mark-white.svg";
@@ -22,11 +23,22 @@ export function ControlPanel() {
   const [hideSticks, setHideSticks] = useAtom(hideSticksAtom);
   const [cloudType, setCloudType] = useAtom(cloudTypeAtom);
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
+  const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
   const [molecule, setMolecule] = useAtom(moleculeAtom);
   const [doNotUse, setDoNotUse] = useAtom(dropElementsAtom);
 
   const [, setOptions] = useControls(() => ({
     debug: { value: debug, label: "Debug", onChange: setDebug },
+    theme: {
+      value: colorTheme,
+      label: "Color theme",
+      options: {
+        "Alt (Default)": 1,
+        CPK: 0,
+        Jmol: 2,
+      },
+      onChange: setColorTheme,
+    },
     noH: { value: noH, label: "No H atoms", onChange: setNoH },
     hideBalls: {
       value: hideBalls,

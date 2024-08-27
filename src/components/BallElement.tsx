@@ -8,8 +8,8 @@ import {
   debugAtom,
   dropElementsAtom,
   noHAtom,
+  periodicTableAtom,
 } from "../state/app-state";
-import { periodicTableBySymbolMap } from "../constants/periodicTable";
 
 interface BallElementProps extends MeshProps {
   symbol: string;
@@ -19,18 +19,19 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
   const ref = useRef<RapierRigidBody>(null!);
   const [noH] = useAtom(noHAtom);
   const [debug] = useAtom(debugAtom);
+  const [periodicTable] = useAtom(periodicTableAtom);
 
   const [ballRadius] = useAtom(ballRadiusAtom);
   const [dropElements] = useAtom(dropElementsAtom);
 
   const { color, radius } = useMemo(() => {
-    const elementData = periodicTableBySymbolMap.get(symbol);
+    const elementData = periodicTable.getElementDataBySymbol(symbol);
 
     return {
       color: elementData?.color,
       radius: elementData?.radius?.[ballRadius],
     };
-  }, [ballRadius, symbol]);
+  }, [ballRadius, periodicTable, symbol]);
 
   if (noH && symbol === "H") {
     return null;

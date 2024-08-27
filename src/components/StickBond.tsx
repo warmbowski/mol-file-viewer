@@ -10,9 +10,8 @@ import {
 } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 import { STICK_RADIUS, STICK_RADIUS_AROMATIC } from "../constants";
-import { periodicTableBySymbolMap } from "../constants/periodicTable";
 import { MoleculeAtom } from "../utils/readMolfile";
-import { debugAtom, noHAtom } from "../state/app-state";
+import { debugAtom, noHAtom, periodicTableAtom } from "../state/app-state";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
@@ -24,6 +23,7 @@ interface StickBondProps {
 export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
   const [noH] = useAtom(noHAtom);
   const [debug] = useAtom(debugAtom);
+  const [periodicTable] = useAtom(periodicTableAtom);
 
   const stickBond = useMemo(() => {
     const { x: x1, y: y1, z: z1, symbol: symbol1 } = atoms[atom1 - 1];
@@ -38,8 +38,12 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     const line = new LineCurve3(start, end);
     const distance = line.getLength();
     const radius = bondType === 4 ? STICK_RADIUS_AROMATIC : STICK_RADIUS;
-    const color1 = new Color(periodicTableBySymbolMap.get(symbol1)?.color);
-    const color2 = new Color(periodicTableBySymbolMap.get(symbol2)?.color);
+    const color1 = new Color(
+      periodicTable.getElementDataBySymbol(symbol1)?.color
+    );
+    const color2 = new Color(
+      periodicTable.getElementDataBySymbol(symbol2)?.color
+    );
 
     /**
      * Not happy with adding bonds imperitively, but it works for now.
@@ -106,7 +110,7 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
     capsule.lookAt(end);
 
     return capsule;
-  }, [atom1, atom2, atoms, bondType, debug, noH]);
+  }, [atom1, atom2, atoms, bondType, debug, noH, periodicTable]);
 
   return <group>{stickBond && <primitive object={stickBond} />}</group>;
 }

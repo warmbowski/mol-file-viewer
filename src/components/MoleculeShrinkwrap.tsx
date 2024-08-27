@@ -1,10 +1,11 @@
 import { useMemo } from "react";
+import { useAtom } from "jotai";
 import { Color, Mesh, ShaderMaterial, SphereGeometry, Vector3 } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 import { DEFAULT_CLOUD_COLOR } from "../constants";
-import { periodicTableBySymbolMap } from "../constants/periodicTable";
 import { MoleculeAtom } from "../utils/readMolfile";
+import { periodicTableAtom } from "../state/app-state";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -14,9 +15,11 @@ interface VanDerWaalsCloudsProps {
 }
 
 export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
+  const [periodicTable] = useAtom(periodicTableAtom);
+
   const cloud = useMemo(() => {
     const sphereGeoms = atoms.map((atom) => {
-      const elementData = periodicTableBySymbolMap.get(atom.symbol);
+      const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
       const geom = new SphereGeometry(elementData?.radius.vanderwaals, 20, 20);
       geom.translate(atom.x, atom.y, atom.z);
       return geom;
@@ -44,7 +47,7 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
     const mesh = new Mesh(convexGeometry, cloudMaterial);
     mesh.scale.set(1.01, 1.01, 1.01);
     return mesh;
-  }, [atoms]);
+  }, [atoms, periodicTable]);
 
   return cloud && <primitive object={cloud} />;
 }

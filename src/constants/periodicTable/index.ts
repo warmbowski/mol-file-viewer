@@ -1,25 +1,55 @@
 import { pTable, PTableParsed } from "periodic-table-data-complete";
 import { FIXED_RADIUS_H_PM, FIXED_RADIUS_PM } from "..";
+import { ColorTheme, colorThemes } from "../colorThemes.noformat";
 
 const orderedPeriodicTableArray = JSON.parse(pTable) as PTableParsed;
 
-export const periodicTableByAtomicNumberMap = new Map(
-  orderedPeriodicTableArray.map((el) => {
-    const elData = {
-      symbol: el.symbol,
-      color: `#${el.cpk_hex || "ffffff"}`,
-      radius: {
-        fixed: (el.symbol === "H" ? FIXED_RADIUS_H_PM : FIXED_RADIUS_PM) / 100,
-        calculated: (el.radius?.calculated || 0) / 100,
-        empirical: (el.radius?.empirical || 0) / 100,
-        covalent: (el.radius?.covalent || 0) / 100,
-        vanderwaals: (el.radius?.vanderwaals || 0) / 100,
-      },
-    };
-    return [el.atomic_number, elData];
-  })
-);
+export interface ElementData {
+  symbol: string;
+  color: string;
+  radius: {
+    fixed: number;
+    calculated: number;
+    empirical: number;
+    covalent: number;
+    vanderwaals: number;
+  };
+}
 
-export const periodicTableBySymbolMap = new Map(
-  [...periodicTableByAtomicNumberMap.values()].map((el) => [el.symbol, el])
-);
+export class PeriodicTable {
+  public theme: ColorTheme = ColorTheme.ALT;
+  private periodicTableByAtomicSymbolMap = new Map<string, ElementData>([]);
+
+  constructor(colorTheme?: ColorTheme) {
+    if (colorTheme !== undefined) {
+      this.theme = colorTheme;
+      this.periodicTableByAtomicSymbolMap = new Map(
+        orderedPeriodicTableArray.map((el) => {
+          const elData: ElementData = {
+            symbol: el.symbol,
+            color:
+              colorThemes[el.symbol][this.theme] ||
+              `#${el.cpk_hex || "ffffff"}`,
+            radius: {
+              fixed:
+                (el.symbol === "H" ? FIXED_RADIUS_H_PM : FIXED_RADIUS_PM) / 100,
+              calculated: (el.radius?.calculated || 0) / 100,
+              empirical: (el.radius?.empirical || 0) / 100,
+              covalent: (el.radius?.covalent || 0) / 100,
+              vanderwaals: (el.radius?.vanderwaals || 0) / 100,
+            },
+          };
+          return [el.symbol, elData];
+        })
+      );
+    }
+  }
+
+  public getElementDataBySymbol(symbol: string) {
+    return this.periodicTableByAtomicSymbolMap.get(symbol);
+  }
+
+  public setColorTheme(colorTheme: ColorTheme) {
+    this.theme = colorTheme;
+  }
+}

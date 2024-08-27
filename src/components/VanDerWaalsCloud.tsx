@@ -3,9 +3,8 @@ import { useAtom } from "jotai";
 import { Color, SphereGeometry } from "three";
 import { Addition, Base, Geometry } from "@react-three/csg";
 import { DEFAULT_CLOUD_COLOR } from "../constants";
-import { periodicTableBySymbolMap } from "../constants/periodicTable";
 import { MoleculeAtom } from "../utils/readMolfile";
-import { debugAtom } from "../state/app-state";
+import { debugAtom, periodicTableAtom } from "../state/app-state";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -16,11 +15,12 @@ interface VanDerWaalsCloudsProps {
 
 export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
   const [debug] = useAtom(debugAtom);
+  const [periodicTable] = useAtom(periodicTableAtom);
 
   const cloudGeometries = useMemo(
     () =>
       atoms.map((atom) => {
-        const elementData = periodicTableBySymbolMap.get(atom.symbol);
+        const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
         const geom = new SphereGeometry(
           elementData?.radius.vanderwaals,
           24,
@@ -29,7 +29,7 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
         geom.translate(atom.x, atom.y, atom.z);
         return geom;
       }),
-    [atoms]
+    [atoms, periodicTable]
   );
 
   return (

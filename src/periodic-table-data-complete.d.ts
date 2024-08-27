@@ -3,11 +3,11 @@ declare module "periodic-table-data-complete" {
   export const pTableUnits: string;
   export const pTableProperties: string;
 
-  export type PTableParsed = Array<ElementData>;
+  export type PTableParsed = Array<PTableElementData>;
   export type PTableUnitsParsed = Record<ElementProperty, string>;
   export type PTablePropertiesParsed = Record<ElementProperty, string>;
 
-  export interface ElementData {
+  export interface PTableElementData {
     name: string;
     symbol: string;
     abundance: {
