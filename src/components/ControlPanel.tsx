@@ -13,7 +13,7 @@ import {
   colorThemeAtom,
 } from "../state/app-state";
 
-import ghLogo from "../assets/github-mark-white.svg";
+// import ghLogo from "../assets/github-mark-white.svg";
 
 export function ControlPanel() {
   const [debug, setDebug] = useAtom(debugAtom);
@@ -115,7 +115,7 @@ export function ControlPanel() {
         hidden
         onChange={handleFileSelect}
       />
-      <div className="repo-link">
+      {/* <div className="repo-link">
         <img src={ghLogo} alt="GitHub logo" style={{ height: "1.5em" }} />
         <a
           href="https://github.com/warmbowski/mol-file-viewer"
@@ -124,7 +124,7 @@ export function ControlPanel() {
         >
           Mol File Viewer repository
         </a>
-      </div>
+      </div> */}
     </>
   );
 }
