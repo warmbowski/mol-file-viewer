@@ -9,7 +9,6 @@ import {
   hideSticksAtom,
   moleculeAtom,
   ballRadiusAtom,
-  dropElementsAtom,
   cloudTypeAtom,
   colorThemeAtom,
 } from "../state/app-state";
@@ -25,7 +24,6 @@ export function ControlPanel() {
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
   const [molecule, setMolecule] = useAtom(moleculeAtom);
-  const [doNotUse, setDoNotUse] = useAtom(dropElementsAtom);
 
   const [, setOptions] = useControls(() => ({
     debug: { value: debug, label: "Debug", onChange: setDebug },
@@ -91,12 +89,6 @@ export function ControlPanel() {
     upload: button(() => document.getElementById("file-input")?.click(), {
       disabled: false,
     }),
-    doNotUse: {
-      value: doNotUse,
-      label: "Do not use",
-      onChange: setDoNotUse,
-      // disabled: true,
-    },
   }));
 
   const uploadMolFile = useUploadMolecule();

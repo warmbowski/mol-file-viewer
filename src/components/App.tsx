@@ -1,7 +1,6 @@
 import { useAtom } from "jotai";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Physics } from "@react-three/rapier";
 import { Molecule } from "./Molecule";
 import { debugAtom } from "../state/app-state";
 import { ControlPanel } from "./ControlPanel";
@@ -16,15 +15,7 @@ export default function App() {
         <OrbitControls />
         <ambientLight intensity={Math.PI} />
         <pointLight position={[10, 10, 10]} castShadow intensity={1000} />
-
-        <Physics
-          debug={debug}
-          interpolate
-          gravity={[0, -40, 0]}
-          timeStep={1 / 60}
-        >
-          <Molecule />
-        </Physics>
+        <Molecule />
         <Environment background blur={0.75}>
           <color attach="background" args={[0x333533]} />
         </Environment>
