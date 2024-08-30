@@ -1,3 +1,7 @@
+/**
+ * Constructive Solid Geometry (CSG) representation of the electron cloud
+ * using the three-csg library
+ */
 import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { Color, SphereGeometry } from "three";

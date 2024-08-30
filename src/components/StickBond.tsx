@@ -11,6 +11,7 @@ import {
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 import { STICK_RADIUS, STICK_RADIUS_AROMATIC } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
+import { glsl } from "../utils/glslLiteral";
 import { debugAtom, noHAtom, periodicTableAtom } from "../state/app-state";
 
 interface StickBondProps {
@@ -72,14 +73,14 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
       shader.uniforms.color1 = { value: color1 };
       shader.uniforms.color2 = { value: color2 };
       shader.uniforms.colorRatio = { value: 0.5 };
-      shader.fragmentShader = `
+      shader.fragmentShader = glsl`
         uniform vec3 color1;
         uniform vec3 color2;
         uniform float colorRatio;
         ${shader.fragmentShader}
       `.replace(
-        `#include <color_fragment>`,
-        `
+        glsl`#include <color_fragment>`,
+        glsl`
         #include <color_fragment>
         diffuseColor.rgb = mix(color1, color2, step(colorRatio, vUv.y));
       `
