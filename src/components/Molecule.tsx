@@ -12,7 +12,7 @@ import {
 import { StickBonds } from "./StickBonds";
 import { BallElements } from "./BallElements";
 import { AtomicClouds } from "./AtomicClouds";
-import { VanDerWaalsClouds } from "./VanDerWaalsCloudBVH";
+import { VanDerWaalsClouds } from "./VanDerWaalsCloud";
 
 export function Molecule() {
   const [molecule] = useAtom(moleculeAtom);
