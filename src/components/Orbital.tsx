@@ -1,17 +1,22 @@
-import { useRef } from "react";
+import { useMemo } from "react";
 import { useAtom } from "jotai";
-import { MeshProps } from "@react-three/fiber";
-import { Color, ColorRepresentation, SphereGeometry } from "three";
+import {
+  Color,
+  ColorRepresentation,
+  Mesh,
+  ShaderMaterial,
+  SphereGeometry,
+} from "three";
 import { DEFAULT_CLOUD_COLOR } from "../constants";
 import { debugAtom } from "../state/app-state";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
 
-interface OrbitalProps extends MeshProps {
-  hybridization?: string;
+interface OrbitalProps {
   radius?: number;
   color?: ColorRepresentation;
+  position: [number, number, number];
 }
 
 export function SOrbital({
@@ -21,44 +26,57 @@ export function SOrbital({
 }: OrbitalProps) {
   const [debug] = useAtom(debugAtom);
 
-  return (
-    <mesh position={position} renderOrder={0.5} scale={[1.01, 1.01, 1.01]}>
-      <sphereGeometry args={[radius && radius + 0.01, 20, 20]} />
-      <shaderMaterial
-        wireframe={debug}
-        uniforms={{
-          color: { value: new Color(color) },
-        }}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        transparent
-        depthTest
-        depthWrite
-      />
-    </mesh>
-  );
+  const mesh = useMemo(() => {
+    const geometry = new SphereGeometry(radius, 20, 20);
+    const material = new ShaderMaterial({
+      wireframe: debug,
+      uniforms: {
+        color: { value: new Color(color) },
+      },
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      transparent: true,
+      depthTest: true,
+      depthWrite: true,
+    });
+
+    const mesh = new Mesh(geometry, material);
+    if (position) {
+      const [x, y, z] = position;
+      mesh.position.set(x, y, z);
+    }
+
+    return mesh;
+  }, [color, debug, position, radius]);
+
+  return <group>{mesh && <primitive object={mesh} />}</group>;
 }
 
 export function POrbital({ radius, position, color }: OrbitalProps) {
-  const pxGeom = useRef<SphereGeometry>(null!);
   const [debug] = useAtom(debugAtom);
 
-  return (
-    <group>
-      <mesh position={position} scale={[1 / 2, 1 / 4, 1 / 4]}>
-        <sphereGeometry ref={pxGeom} args={[radius, 20, 20]} />
-        <shaderMaterial
-          wireframe={debug}
-          uniforms={{
-            color: { value: new Color(color) },
-          }}
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          transparent
-          depthTest
-          depthWrite
-        />
-      </mesh>
-    </group>
-  );
+  const mesh = useMemo(() => {
+    const geometry = new SphereGeometry(radius, 20, 20);
+    const material = new ShaderMaterial({
+      wireframe: debug,
+      uniforms: {
+        color: { value: new Color(color) },
+      },
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      transparent: true,
+      depthTest: true,
+      depthWrite: true,
+    });
+
+    const mesh = new Mesh(geometry, material);
+    if (position) {
+      const [x, y, z] = position;
+      mesh.position.set(x, y, z);
+    }
+
+    return mesh;
+  }, [color, debug, position, radius]);
+
+  return <group>{mesh && <primitive object={mesh} />}</group>;
 }
