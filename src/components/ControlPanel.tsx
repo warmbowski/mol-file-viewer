@@ -88,9 +88,12 @@ export function ControlPanel() {
       },
       onChange: setMolecule,
     },
-    upload: button(() => document.getElementById("file-input")?.click(), {
-      disabled: false,
-    }),
+    "Upload mol/sdf file": button(
+      () => document.getElementById("file-input")?.click(),
+      {
+        disabled: false,
+      }
+    ),
   }));
 
   const uploadMolFile = useUploadMolecule();
