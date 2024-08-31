@@ -1,58 +1,26 @@
 # Interactive 3d molecule viewer in React
 
-A rewrite of [LiamOsler/Three-Molecules](https://github.com/LiamOsler/Three-Molecules) declaritively using `@react-three/fiber` and Typescript in a Vite meta-framework.
+Inspired by [LiamOsler/Three-Molecules](https://github.com/LiamOsler/Three-Molecules) but coded declaritively using `@react-three/fiber` and Typescript in a Vite meta-framework.
 
 Demo: https://mol-file-viewer.netlify.app
 
----
+## Other inspired technologies and studys
 
-# React + TypeScript + Vite
+### Signed Distance Field (SDF) Raymarching representation of Van der Waals cloud.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- based on https://github.com/MelonCode/r3f-raymarching/tree/main
+- less cpu intenseive but requires immense recalculation when orbiting model
 
-Currently, two official plugins are available:
+### Constructive Solid Geometry (CSG) representation of Van der Waals cloud.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- based on https://github.com/gkjohnson/three-bvh-csg/blob/main/examples/multimaterial.js
+- cpu intensive calculation, but offloaded to webworker
+- geometry serialized and cached once calulated
 
-## Expanding the ESLint configuration
+# Getting started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
-```
+- clone repo and cd into directory
+- run `npm install`
+- run `npm run dev` for running local development server
+- run `npm run build` for production build
+- run `npm run preview` for running produciton build server locally
