@@ -14,6 +14,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { MoleculeAtom } from "../utils/readMolfile";
 import {
+  colorThemeAtom,
   debugAtom,
   periodicTableAtom,
   processingWorkerAtom,
@@ -34,6 +35,7 @@ interface VanDerWaalsCloudsProps {
 export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
   const [periodicTable] = useAtom(periodicTableAtom);
   const [debug] = useAtom(debugAtom);
+  const [theme] = useAtom(colorThemeAtom);
   const [, setProcessing] = useAtom(processingWorkerAtom);
 
   const brushData: BrushData[] = useMemo(
@@ -69,7 +71,7 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
   );
 
   const { data: csgJson, isFetching } = useQuery({
-    queryKey: ["calculate-vanderwaal-cloud", cacheKey],
+    queryKey: ["calculate-vanderwaal-cloud", theme, cacheKey],
     queryFn: () => csgBrushWorker.cgsBrushCalcs(brushData),
     staleTime: Infinity,
   });
