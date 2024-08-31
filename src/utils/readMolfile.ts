@@ -41,6 +41,7 @@ export interface MolObj {
   extents: MoleculeExtents;
   atoms: MoleculeAtom[];
   bonds: MoleculeBond[];
+  base64: string;
 }
 
 export function readMolFile(molFile: string): MolObj {
@@ -142,6 +143,7 @@ export function readMolFile(molFile: string): MolObj {
     })),
     bonds: bondsArray,
     extents,
+    base64: btoa(molFile),
   };
 }
 

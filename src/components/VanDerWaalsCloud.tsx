@@ -2,25 +2,41 @@
  * Constructive Solid Geometry (CSG) representation of the electron cloud
  * based on https://github.com/gkjohnson/three-bvh-csg/blob/main/examples/multimaterial.js
  */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAtom } from "jotai";
-import { Color, ShaderMaterial, SphereGeometry } from "three";
-import { ADDITION, Brush, Evaluator } from "three-bvh-csg";
+import {
+  Color,
+  Mesh,
+  ObjectLoader,
+  ShaderMaterial,
+  SphereGeometry,
+} from "three";
+import { useQuery } from "@tanstack/react-query";
 import { MoleculeAtom } from "../utils/readMolfile";
-import { debugAtom, periodicTableAtom } from "../state/app-state";
+import {
+  debugAtom,
+  periodicTableAtom,
+  processingWorkerAtom,
+} from "../state/app-state";
+import { csgBrushWorker } from "../utils/workers/cgsBrushWorker";
+import { BrushData } from "../utils/workers/cgsBrushCalcs";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
 
+const meshLoader = new ObjectLoader();
+
 interface VanDerWaalsCloudsProps {
   atoms: MoleculeAtom[];
+  cacheKey?: string;
 }
 
-export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
+export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
   const [periodicTable] = useAtom(periodicTableAtom);
   const [debug] = useAtom(debugAtom);
+  const [, setProcessing] = useAtom(processingWorkerAtom);
 
-  const brushes = useMemo(
+  const brushData: BrushData[] = useMemo(
     () =>
       atoms.map((atom) => {
         const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
@@ -44,20 +60,30 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
         );
         geometry.translate(atom.x, atom.y, atom.z);
 
-        return new Brush(geometry, material);
+        return {
+          materialJson: material.toJSON(),
+          geometryJson: geometry.toNonIndexed().toJSON(),
+        };
       }),
     [atoms, debug, periodicTable]
   );
 
-  const combined = useMemo(() => {
-    const evaluator = new Evaluator();
-    return brushes.reduce<Brush | undefined>((acc, brush) => {
-      if (acc === undefined) {
-        return brush;
-      }
-      return evaluator.evaluate(acc, brush, ADDITION);
-    }, undefined);
-  }, [brushes]);
+  const { data: csgJson, isFetching } = useQuery({
+    queryKey: ["calculate-vanderwaal-cloud", cacheKey],
+    queryFn: () => csgBrushWorker.cgsBrushCalcs(brushData),
+    staleTime: Infinity,
+  });
 
-  return <group>{combined && <primitive object={combined} />}</group>;
+  const cloudMesh = useMemo(() => {
+    if (!csgJson) {
+      return undefined;
+    }
+    return meshLoader.parse(csgJson) as Mesh;
+  }, [csgJson]);
+
+  useEffect(() => {
+    setProcessing(isFetching);
+  }, [isFetching, setProcessing]);
+
+  return <group>{cloudMesh && <primitive object={cloudMesh} />}</group>;
 }

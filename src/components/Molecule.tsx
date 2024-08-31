@@ -29,12 +29,14 @@ export function Molecule() {
   ) : (
     <>
       {error && <Text color="red">Error loading molecule</Text>}
-      {atoms.length && (
+      {data && atoms.length && (
         <group>
           {!hideSticks && <StickBonds atoms={atoms} bonds={bonds} />}
           {!hideBalls && <BallElements atoms={atoms} />}
           {cloudType === "atomic" && <AtomicClouds atoms={atoms} />}
-          {cloudType === "vanderwaals" && <VanDerWaalsClouds atoms={atoms} />}
+          {cloudType === "vanderwaals" && (
+            <VanDerWaalsClouds atoms={atoms} cacheKey={data.base64} />
+          )}
         </group>
       )}
     </>

@@ -11,6 +11,7 @@ import {
   ballRadiusAtom,
   cloudTypeAtom,
   colorThemeAtom,
+  processingWorkerAtom,
 } from "../state/app-state";
 
 // import ghLogo from "../assets/github-mark-white.svg";
@@ -24,6 +25,7 @@ export function ControlPanel() {
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
   const [molecule, setMolecule] = useAtom(moleculeAtom);
+  const [processing] = useAtom(processingWorkerAtom);
 
   const [, setOptions] = useControls(() => ({
     debug: { value: debug, label: "Debug", onChange: setDebug },
@@ -115,6 +117,11 @@ export function ControlPanel() {
         hidden
         onChange={handleFileSelect}
       />
+      {processing && (
+        <div className="processing">
+          <p>Processing molecule...</p>
+        </div>
+      )}
       {/* <div className="repo-link">
         <img src={ghLogo} alt="GitHub logo" style={{ height: "1.5em" }} />
         <a

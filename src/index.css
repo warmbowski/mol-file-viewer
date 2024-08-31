@@ -20,7 +20,8 @@ a {
   color: inherit;
 }
 
-.repo-link {
+.repo-link,
+.processing {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -33,4 +34,10 @@ a {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   line-height: 1.5;
   z-index: 100;
+}
+
+.processing {
+  background-color: lightgoldenrodyellow;
+  color: black;
+  z-index: 110;
 }
