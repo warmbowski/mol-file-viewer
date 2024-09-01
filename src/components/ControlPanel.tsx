@@ -125,7 +125,8 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
       />
       {processing && (
         <div className="processing">
-          <p>Calculating Van der Waals cloud...</p>
+          <div>Calculating Van der Waals cloud...</div>
+          <progress value={processing} max="100" style={{ width: "100%" }} />
         </div>
       )}
       {/* <div className="repo-link">

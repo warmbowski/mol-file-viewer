@@ -56,7 +56,7 @@ export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324", [
 
 // Not persisted
 // export const dropElementsAtom = atom(false);
-export const processingWorkerAtom = atom(false);
+export const processingWorkerAtom = atom(0);
 
 // derived
 export const periodicTableAtom = atom((get) => {

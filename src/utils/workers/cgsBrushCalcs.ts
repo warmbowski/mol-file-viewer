@@ -16,8 +16,13 @@ export function cgsBrushCalcs(brushData: BrushData[]): MeshJSON | undefined {
   const evaluator = new Evaluator();
   const bufferLoader = new BufferGeometryLoader();
   const materialLoader = new MaterialLoader();
+  const postMessage = self.postMessage;
 
-  const brushes = brushData.map(({ geometryJson, materialJson }) => {
+  const brushes = brushData.map(({ geometryJson, materialJson }, index) => {
+    postMessage({
+      type: "PROGRESS",
+      progress: (index / brushData.length) * 75,
+    });
     const material = materialLoader.parse(materialJson);
     const geometry = bufferLoader.parse(geometryJson);
     return new Brush(geometry, material);

@@ -41,6 +41,7 @@ a {
 
 .processing {
   background-color: lightgoldenrodyellow;
+  flex-direction: column;
   color: black;
   z-index: 110;
 }

@@ -19,7 +19,7 @@ import {
   periodicTableAtom,
   processingWorkerAtom,
 } from "../state/app-state";
-import { csgBrushWorker } from "../utils/workers/cgsBrushWorker";
+import { makeCsgBrushWorker } from "../utils/workers/cgsBrushWorker";
 import { BrushData } from "../utils/workers/cgsBrushCalcs";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
@@ -72,7 +72,16 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
 
   const { data: csgJson, isFetching } = useQuery({
     queryKey: ["calculate-vanderwaal-cloud", theme, cacheKey],
-    queryFn: () => csgBrushWorker.cgsBrushCalcs(brushData),
+    queryFn: () =>
+      makeCsgBrushWorker({
+        onMessage: (evt) => {
+          if (evt.data.type === "PROGRESS") {
+            setProcessing(evt.data.progress || 0.1);
+          } else if (evt.data.type === "RAW") {
+            setProcessing(100);
+          }
+        },
+      }).cgsBrushCalcs(brushData),
     staleTime: Infinity,
   });
 
@@ -84,8 +93,12 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
   }, [csgJson]);
 
   useEffect(() => {
-    setProcessing(isFetching);
-  }, [isFetching, setProcessing]);
+    if (csgJson && !isFetching) {
+      setTimeout(() => {
+        setProcessing(0);
+      }, 1000);
+    }
+  }, [csgJson, isFetching, setProcessing]);
 
   return <group>{cloudMesh && <primitive object={cloudMesh} />}</group>;
 }
