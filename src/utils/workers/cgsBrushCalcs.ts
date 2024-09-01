@@ -18,17 +18,17 @@ export function cgsBrushCalcs(brushData: BrushData[]): MeshJSON | undefined {
   const materialLoader = new MaterialLoader();
   const postMessage = self.postMessage;
 
-  const brushes = brushData.map(({ geometryJson, materialJson }, index) => {
-    postMessage({
-      type: "PROGRESS",
-      progress: (index / brushData.length) * 75,
-    });
+  const brushes = brushData.map(({ geometryJson, materialJson }) => {
     const material = materialLoader.parse(materialJson);
     const geometry = bufferLoader.parse(geometryJson);
     return new Brush(geometry, material);
   });
 
-  const newBrush = brushes.reduce<Brush | undefined>((acc, brush) => {
+  const newBrush = brushes.reduce<Brush | undefined>((acc, brush, index) => {
+    postMessage({
+      type: "PROGRESS",
+      progress: (index / brushData.length) * 95,
+    });
     if (acc === undefined) {
       return new Brush(brush.geometry, brush.material);
     }
