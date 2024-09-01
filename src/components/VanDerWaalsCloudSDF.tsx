@@ -56,7 +56,7 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
       atoms.map((atom) => {
         const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
 
-        console.log("radius", atom.symbol, elementData?.radius.vanderwaals);
+        // console.log("radius", atom.symbol, elementData?.radius.vanderwaals);
 
         return {
           color: new Color(DEFAULT_CLOUD_COLOR),

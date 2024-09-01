@@ -28,13 +28,10 @@ export class PeriodicTable {
   private periodicTableByAtomicSymbolMap = new Map<string, ElementData>([]);
 
   constructor(colorTheme?: ColorTheme) {
-    console.log("colorTheme", colorTheme);
     if (colorTheme && colorTheme > -1 && colorTheme < 3) {
       this.theme = colorTheme;
       this.periodicTableByAtomicSymbolMap = new Map(
         orderedPeriodicTableArray.map((el) => {
-          console.log("el", el);
-          console.log("theme", colorTheme, this.theme);
           const elData: ElementData = {
             symbol: el.symbol,
             name: el.name,
