@@ -8,9 +8,10 @@ import {
   noHAtom,
   periodicTableAtom,
 } from "../state/app-state";
+import { ElementSymbol } from "../constants/types";
 
 interface BallElementProps extends MeshProps {
-  symbol: string;
+  symbol: ElementSymbol;
 }
 
 export function BallElement({ symbol, ...meshProps }: BallElementProps) {

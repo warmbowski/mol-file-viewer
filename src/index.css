@@ -47,10 +47,11 @@ a {
 
 .element-list {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
-  right: 50%;
+  max-height: 90vh;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: flex-start;
   background-color: "transparent";

@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useAtom } from "jotai";
 import { button, useControls, Leva } from "leva";
+import { PTableSymbol } from "periodic-table-data-complete";
 import { useUploadMolecule } from "../api/hooks/useUploadMolecule";
 import {
   debugAtom,
@@ -17,7 +18,7 @@ import { ElementCardList } from "./ElementCardList";
 
 // import ghLogo from "../assets/github-mark-white.svg";
 
-export function ControlPanel({ symbols }: { symbols: string[] }) {
+export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
   const [debug, setDebug] = useAtom(debugAtom);
   const [noH, setNoH] = useAtom(noHAtom);
   const [hideBalls, setHideBalls] = useAtom(hideBallsAtom);

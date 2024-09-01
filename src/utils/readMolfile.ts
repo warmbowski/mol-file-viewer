@@ -1,3 +1,5 @@
+import { ElementSymbol } from "../constants/types";
+
 export interface MoleculeObject {
   header: MoleculeHeader;
   counts: MoleculeCounts;
@@ -108,7 +110,7 @@ export interface MoleculeAtom {
   x: number;
   y: number;
   z: number;
-  symbol: string;
+  symbol: ElementSymbol;
   bondedAtoms: MoleculeAtom[];
 }
 
@@ -124,7 +126,7 @@ function parseMoleculeAtoms(
       x: Number(fileLines[i].slice(0, 10).trim()),
       y: Number(fileLines[i].slice(10, 20).trim()),
       z: Number(fileLines[i].slice(20, 30).trim()),
-      symbol: fileLines[i].slice(31, 33).trim(),
+      symbol: fileLines[i].slice(31, 33).trim() as ElementSymbol,
       bondedAtoms: [], // will be filled in later by linkAtoms function
     };
     atomsArray.push(atom);

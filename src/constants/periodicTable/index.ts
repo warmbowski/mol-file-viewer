@@ -1,11 +1,15 @@
-import { pTable, PTableParsed } from "periodic-table-data-complete";
+import {
+  pTable,
+  PTableParsed,
+  PTableSymbol,
+} from "periodic-table-data-complete";
 import { FIXED_RADIUS_H_PM, FIXED_RADIUS_PM } from "..";
 import { ColorTheme, colorThemes } from "../colorThemes.noformat";
 
 const orderedPeriodicTableArray = JSON.parse(pTable) as PTableParsed;
 
 export interface ElementData {
-  symbol: string;
+  symbol: PTableSymbol;
   color: string;
   name: string;
   atomic_number: number;
@@ -24,17 +28,20 @@ export class PeriodicTable {
   private periodicTableByAtomicSymbolMap = new Map<string, ElementData>([]);
 
   constructor(colorTheme?: ColorTheme) {
-    if (colorTheme !== undefined) {
+    console.log("colorTheme", colorTheme);
+    if (colorTheme && colorTheme > -1 && colorTheme < 3) {
       this.theme = colorTheme;
       this.periodicTableByAtomicSymbolMap = new Map(
         orderedPeriodicTableArray.map((el) => {
+          console.log("el", el);
+          console.log("theme", colorTheme, this.theme);
           const elData: ElementData = {
             symbol: el.symbol,
             name: el.name,
             atomic_number: el.atomic_number,
             atomic_mass: el.atomic_mass,
             color:
-              colorThemes[el.symbol][this.theme] ||
+              colorThemes[el.symbol][colorTheme] ||
               `#${el.cpk_hex || "ffffff"}`,
             radius: {
               fixed:
@@ -51,7 +58,7 @@ export class PeriodicTable {
     }
   }
 
-  public getElementDataBySymbol(symbol: string) {
+  public getElementDataBySymbol(symbol: PTableSymbol) {
     return this.periodicTableByAtomicSymbolMap.get(symbol);
   }
 
