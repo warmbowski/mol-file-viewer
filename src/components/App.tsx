@@ -1,12 +1,20 @@
+import { useMemo } from "react";
 import { useAtom } from "jotai";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, Progress, Text } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Molecule } from "./Molecule";
-import { debugAtom } from "../state/app-state";
+import { debugAtom, moleculeAtom } from "../state/app-state";
 import { ControlPanel } from "./ControlPanel";
+import { useGetMolecule } from "../api/hooks/useGetMolecule";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
+  const [molecule] = useAtom(moleculeAtom);
+  const { data, error, isFetching } = useGetMolecule(molecule);
+
+  const symbols = useMemo(() => {
+    return new Set(data?.atoms.map((atom) => atom.symbol));
+  }, [data]);
 
   return (
     <>
@@ -15,12 +23,13 @@ export default function App() {
         <OrbitControls />
         <ambientLight intensity={Math.PI} />
         <pointLight position={[10, 10, 10]} castShadow intensity={1000} />
-        <Molecule />
+        {!isFetching && data ? <Molecule molecule={data} /> : <Progress />}
+        {error && <Text color="red">Error loading molecule</Text>}
         <Environment background blur={0.75}>
           <color attach="background" args={[0x333533]} />
         </Environment>
       </Canvas>
-      <ControlPanel />
+      <ControlPanel symbols={[...symbols]} />
     </>
   );
 }

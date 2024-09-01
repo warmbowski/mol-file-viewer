@@ -13,10 +13,11 @@ import {
   colorThemeAtom,
   processingWorkerAtom,
 } from "../state/app-state";
+import { ElementCardList } from "./ElementCardList";
 
 // import ghLogo from "../assets/github-mark-white.svg";
 
-export function ControlPanel() {
+export function ControlPanel({ symbols }: { symbols: string[] }) {
   const [debug, setDebug] = useAtom(debugAtom);
   const [noH, setNoH] = useAtom(noHAtom);
   const [hideBalls, setHideBalls] = useAtom(hideBallsAtom);
@@ -113,6 +114,7 @@ export function ControlPanel() {
   return (
     <>
       <Leva collapsed={window.innerWidth <= 768 ? true : false} />
+      <ElementCardList symbols={symbols} />
       <input
         type="file"
         id="file-input"

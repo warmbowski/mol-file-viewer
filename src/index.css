@@ -43,3 +43,36 @@ a {
   color: black;
   z-index: 110;
 }
+
+.element-list {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  background-color: "transparent";
+  font-size: 10px;
+  gap: 8px;
+  padding: 1em;
+}
+
+.element {
+  min-width: 52px;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 4px rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+  cursor: default;
+  pointer-events: none;
+}
+
+.symbol {
+  font-size: 1.5em;
+}

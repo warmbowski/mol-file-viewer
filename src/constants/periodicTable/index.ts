@@ -7,6 +7,9 @@ const orderedPeriodicTableArray = JSON.parse(pTable) as PTableParsed;
 export interface ElementData {
   symbol: string;
   color: string;
+  name: string;
+  atomic_number: number;
+  atomic_mass: number;
   radius: {
     fixed: number;
     calculated: number;
@@ -27,6 +30,9 @@ export class PeriodicTable {
         orderedPeriodicTableArray.map((el) => {
           const elData: ElementData = {
             symbol: el.symbol,
+            name: el.name,
+            atomic_number: el.atomic_number,
+            atomic_mass: el.atomic_mass,
             color:
               colorThemes[el.symbol][this.theme] ||
               `#${el.cpk_hex || "ffffff"}`,
