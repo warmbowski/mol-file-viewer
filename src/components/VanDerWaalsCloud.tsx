@@ -98,6 +98,7 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
         setProcessing(0);
       }, 1000);
     }
+    return () => setProcessing(0);
   }, [csgJson, isFetching, setProcessing]);
 
   return <group>{cloudMesh && <primitive object={cloudMesh} />}</group>;

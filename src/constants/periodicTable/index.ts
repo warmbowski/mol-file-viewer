@@ -28,7 +28,7 @@ export class PeriodicTable {
   private periodicTableByAtomicSymbolMap = new Map<string, ElementData>([]);
 
   constructor(colorTheme?: ColorTheme) {
-    if (colorTheme && colorTheme > -1 && colorTheme < 3) {
+    if (colorTheme !== undefined && colorTheme > -1 && colorTheme < 3) {
       this.theme = colorTheme;
       this.periodicTableByAtomicSymbolMap = new Map(
         orderedPeriodicTableArray.map((el) => {
