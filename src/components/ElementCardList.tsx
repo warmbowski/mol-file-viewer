@@ -38,9 +38,11 @@ export function ElementCardList({ symbols }: { symbols: PTableSymbol[] }) {
 
   return (
     <div className="element-list">
-      {elementList.map((ed) => (
-        <ElementCard key={ed?.symbol} elementData={ed} />
-      ))}
+      {elementList
+        .sort((a, b) => a.atomic_number - b.atomic_number)
+        .map((ele) => (
+          <ElementCard key={ele?.symbol} elementData={ele} />
+        ))}
     </div>
   );
 }
