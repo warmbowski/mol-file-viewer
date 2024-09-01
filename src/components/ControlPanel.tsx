@@ -122,7 +122,7 @@ export function ControlPanel() {
       />
       {processing && (
         <div className="processing">
-          <p>Processing molecule...</p>
+          <p>Calculating Van der Waals cloud...</p>
         </div>
       )}
       {/* <div className="repo-link">
