@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useAtom } from "jotai";
 import {
-  Vector3,
   CapsuleGeometry,
   LineCurve3,
   Mesh,
@@ -13,6 +12,7 @@ import { STICK_RADIUS, STICK_RADIUS_AROMATIC } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { glsl } from "../utils/glslLiteral";
 import { debugAtom, noHAtom, periodicTableAtom } from "../state/app-state";
+import { scalePosition, scaleRadius } from "../utils/scaleModelData";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];
@@ -34,11 +34,13 @@ export function StickBond({ atoms, atom1, atom2, bondType }: StickBondProps) {
       return null;
     }
 
-    const start = new Vector3(x1, y1, z1);
-    const end = new Vector3(x2, y2, z2);
+    const start = scalePosition(x1, y1, z1);
+    const end = scalePosition(x2, y2, z2);
     const line = new LineCurve3(start, end);
     const distance = line.getLength();
-    const radius = bondType === 4 ? STICK_RADIUS_AROMATIC : STICK_RADIUS;
+    const radius = scaleRadius(
+      bondType === 4 ? STICK_RADIUS_AROMATIC : STICK_RADIUS
+    );
     const color1 = new Color(
       periodicTable.getElementDataBySymbol(symbol1)?.color
     );

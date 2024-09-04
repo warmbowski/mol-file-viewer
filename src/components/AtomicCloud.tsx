@@ -3,6 +3,7 @@ import { MoleculeAtom } from "../utils/readMolfile";
 import { noHAtom, periodicTableAtom } from "../state/app-state";
 import { SOrbital } from "./Orbital";
 import { useMemo } from "react";
+import { scalePosition, scaleRadius } from "../utils/scaleModelData";
 
 export function AtomicCloud({ atom }: { atom: MoleculeAtom }) {
   const [noH] = useAtom(noHAtom);
@@ -22,8 +23,8 @@ export function AtomicCloud({ atom }: { atom: MoleculeAtom }) {
 
   return (
     <SOrbital
-      radius={elementData?.radius.covalent}
-      position={[atom.x, atom.y, atom.z]}
+      radius={scaleRadius(elementData?.radius.covalent)}
+      position={scalePosition(atom.x, atom.y, atom.z)}
       color={elementData?.color}
     />
   );

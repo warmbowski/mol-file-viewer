@@ -3,7 +3,7 @@ import {
   PTableParsed,
   PTableSymbol,
 } from "periodic-table-data-complete";
-import { FIXED_RADIUS_H_PM, FIXED_RADIUS_PM } from "..";
+import { FIXED_RADIUS_H_PM, FIXED_RADIUS_PM, SCALE_FACTOR } from "..";
 import { ColorTheme, colorThemes } from "../colorThemes.noformat";
 
 const orderedPeriodicTableArray = JSON.parse(pTable) as PTableParsed;
@@ -61,5 +61,15 @@ export class PeriodicTable {
 
   public setColorTheme(colorTheme: ColorTheme) {
     this.theme = colorTheme;
+  }
+
+  public getScaledRadius(
+    symbol: PTableSymbol,
+    radiusType: keyof ElementData["radius"]
+  ) {
+    return (
+      (this.getElementDataBySymbol(symbol)?.radius[radiusType] || 0) *
+      SCALE_FACTOR
+    );
   }
 }

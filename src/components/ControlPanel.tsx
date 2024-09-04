@@ -13,8 +13,11 @@ import {
   cloudTypeAtom,
   colorThemeAtom,
   processingWorkerAtom,
+  canvasStateAtom,
 } from "../state/app-state";
 import { ElementCardList } from "./ElementCardList";
+import { exportToSTL } from "../utils/exportToStl";
+import { getDateTimeStamp } from "../utils/getDateTimeStamp";
 
 // import ghLogo from "../assets/github-mark-white.svg";
 
@@ -28,75 +31,96 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
   const [molecule, setMolecule] = useAtom(moleculeAtom);
   const [processing] = useAtom(processingWorkerAtom);
+  const [canvasState] = useAtom(canvasStateAtom);
 
-  const [, setOptions] = useControls(() => ({
-    debug: { value: debug, label: "Debug", onChange: setDebug },
-    theme: {
-      value: colorTheme,
-      label: "Color theme",
-      options: {
-        "Alt (Default)": 1,
-        CPK: 0,
-        Jmol: 2,
+  const [, setOptions] = useControls(
+    () => ({
+      debug: { value: debug, label: "Debug", onChange: setDebug },
+      theme: {
+        value: colorTheme,
+        label: "Color theme",
+        options: {
+          "Alt (Default)": 1,
+          CPK: 0,
+          Jmol: 2,
+        },
+        onChange: setColorTheme,
       },
-      onChange: setColorTheme,
-    },
-    noH: { value: noH, label: "No H atoms", onChange: setNoH },
-    hideBalls: {
-      value: hideBalls,
-      label: "Hide balls",
-      onChange: setHideBalls,
-    },
-    hideSticks: {
-      value: hideSticks,
-      label: "Hide sticks",
-      onChange: setHideSticks,
-    },
-    cloudType: {
-      value: cloudType,
-      label: "Cloud type",
-      options: {
-        None: "none",
-        Atomic: "atomic",
-        "Van der Waals": "vanderwaals",
+      noH: { value: noH, label: "No H atoms", onChange: setNoH },
+      hideBalls: {
+        value: hideBalls,
+        label: "Hide balls",
+        onChange: setHideBalls,
       },
-      onChange: setCloudType,
-    },
-    ballRadius: {
-      value: ballRadius,
-      label: "Ball radius",
-      options: {
-        Fixed: "fixed",
-        "Atomic (Calc)": "calculated",
-        "Atomic (Emper)": "empirical",
-        Covalent: "covalent",
-        "Van der Waals": "vanderwaals",
+      hideSticks: {
+        value: hideSticks,
+        label: "Hide sticks",
+        onChange: setHideSticks,
       },
-      onChange: setBallRadius,
-    },
-    molecule: {
-      value: molecule,
-      label: "Pick molecule",
-      options: {
-        "Ethane (6324)": "6324",
-        "Ethanol (682)": "682",
-        "Benzoic acid (238)": "238",
-        "Caffiene (2424)": "2424",
-        "Catnip (141747)": "141747",
-        "Dichlorodiphenyldichloroethylene (2927)": "2927",
-        "Silicon Compound (64-17-5)": "64-17-5",
-        "Phosphazene Compound (C60H42N3O6P3)": "C60H42N3O6P3",
-        custom: "custom",
+      cloudType: {
+        value: cloudType,
+        label: "Cloud type",
+        options: {
+          None: "none",
+          Atomic: "atomic",
+          "Van der Waals": "vanderwaals",
+        },
+        onChange: setCloudType,
       },
-      onChange: setMolecule,
-    },
-    "Upload mol/sdf file": button(
-      () => document.getElementById("file-input")?.click(),
-      {
-        disabled: false,
-      }
-    ),
-  }));
+      ballRadius: {
+        value: ballRadius,
+        label: "Ball radius",
+        options: {
+          Fixed: "fixed",
+          "Atomic (Calc)": "calculated",
+          "Atomic (Emper)": "empirical",
+          Covalent: "covalent",
+          "Van der Waals": "vanderwaals",
+        },
+        onChange: setBallRadius,
+      },
+      molecule: {
+        value: molecule,
+        label: "Pick molecule",
+        options: {
+          "Ethane (6324)": "6324",
+          "Ethanol (682)": "682",
+          "Benzoic acid (238)": "238",
+          "Caffiene (2424)": "2424",
+          "Catnip (141747)": "141747",
+          "Dichlorodiphenyldichloroethylene (2927)": "2927",
+          "Silicon Compound (64-17-5)": "64-17-5",
+          "Phosphazene Compound (C60H42N3O6P3)": "C60H42N3O6P3",
+          custom: "custom",
+        },
+        onChange: setMolecule,
+      },
+      "Upload mol/sdf file": button(
+        () => document.getElementById("file-input")?.click(),
+        {
+          disabled: false,
+        }
+      ),
+      "Export model to stl": button(
+        () => {
+          if (canvasState) {
+            const filename = `${molecule}-${getDateTimeStamp()}.stl`;
+            const stl = exportToSTL(canvasState.scene);
+            const url = URL.createObjectURL(stl);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        },
+        {
+          disabled: !canvasState,
+        }
+      ),
+    }),
+    [canvasState]
+  );
 
   const uploadMolFile = useUploadMolecule();
 

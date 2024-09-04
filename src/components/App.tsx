@@ -6,6 +6,7 @@ import { Molecule } from "./Molecule";
 import { debugAtom, moleculeAtom } from "../state/app-state";
 import { ControlPanel } from "./ControlPanel";
 import { useGetMolecule } from "../api/hooks/useGetMolecule";
+import { SCALE_FACTOR } from "../constants";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
@@ -18,11 +19,19 @@ export default function App() {
 
   return (
     <>
-      <Canvas camera={{ position: [0, 0, 13], fov: 25, near: 0.1, far: 250 }}>
-        {debug && <axesHelper args={[5]} />}
+      <Canvas
+        camera={{
+          position: [0, 0, 13 * SCALE_FACTOR],
+          fov: 25,
+          near: 0.1,
+          far: 3000,
+        }}
+      >
+        {debug && <axesHelper args={[10]} />}
         <OrbitControls />
         <ambientLight intensity={Math.PI} />
-        <pointLight position={[10, 10, 10]} castShadow intensity={1000} />
+        <pointLight position={[0, -70, 70]} intensity={5000} />
+        <pointLight position={[0, 70, -70]} intensity={5000} />
         {!isFetching && data ? <Molecule molecule={data} /> : <Progress />}
         {error && <Text color="red">Error loading molecule</Text>}
         <Environment background blur={0.75}>

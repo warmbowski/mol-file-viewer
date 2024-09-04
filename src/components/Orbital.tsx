@@ -6,6 +6,7 @@ import {
   Mesh,
   ShaderMaterial,
   SphereGeometry,
+  Vector3,
 } from "three";
 import { DEFAULT_CLOUD_COLOR } from "../constants";
 import { debugAtom } from "../state/app-state";
@@ -16,7 +17,7 @@ import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
 interface OrbitalProps {
   radius?: number;
   color?: ColorRepresentation;
-  position: [number, number, number];
+  position: Vector3;
 }
 
 export function SOrbital({

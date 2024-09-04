@@ -1,6 +1,6 @@
 import { BallElement } from "./BallElement";
-import { Vector3 } from "three";
 import { MoleculeAtom } from "../utils/readMolfile";
+import { scalePosition } from "../utils/scaleModelData";
 
 interface BallElementsProps {
   atoms: MoleculeAtom[];
@@ -14,7 +14,7 @@ export function BallElements({ atoms }: BallElementsProps) {
       <BallElement
         key={`${symbol}${index}`}
         symbol={symbol}
-        position={new Vector3(x, y, z)}
+        position={scalePosition(x, y, z)}
       />
     );
   });

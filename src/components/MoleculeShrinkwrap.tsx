@@ -6,6 +6,7 @@ import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js"
 import { DEFAULT_CLOUD_COLOR } from "../constants";
 import { MoleculeAtom } from "../utils/readMolfile";
 import { periodicTableAtom } from "../state/app-state";
+import { scalePosition, scaleRadius } from "../utils/scaleModelData";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -20,8 +21,10 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
   const cloud = useMemo(() => {
     const sphereGeoms = atoms.map((atom) => {
       const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
-      const geom = new SphereGeometry(elementData?.radius.vanderwaals, 20, 20);
-      geom.translate(atom.x, atom.y, atom.z);
+      const radius = scaleRadius(elementData?.radius.vanderwaals);
+      const geom = new SphereGeometry(radius, 20, 20);
+      const position = scalePosition(atom.x, atom.y, atom.z);
+      geom.translate(position.x, position.y, position.z);
       return geom;
     });
 

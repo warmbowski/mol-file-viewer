@@ -9,6 +9,7 @@ import {
   periodicTableAtom,
 } from "../state/app-state";
 import { ElementSymbol } from "../constants/types";
+import { scaleRadius } from "../utils/scaleModelData";
 
 interface BallElementProps extends MeshProps {
   symbol: ElementSymbol;
@@ -18,7 +19,6 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
   const [noH] = useAtom(noHAtom);
   const [debug] = useAtom(debugAtom);
   const [periodicTable] = useAtom(periodicTableAtom);
-
   const [ballRadius] = useAtom(ballRadiusAtom);
 
   const { color, radius } = useMemo(() => {
@@ -26,7 +26,7 @@ export function BallElement({ symbol, ...meshProps }: BallElementProps) {
 
     return {
       color: elementData?.color,
-      radius: elementData?.radius?.[ballRadius],
+      radius: scaleRadius(elementData?.radius?.[ballRadius]),
     };
   }, [ballRadius, periodicTable, symbol]);
 

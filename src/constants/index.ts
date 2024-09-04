@@ -1,3 +1,4 @@
+export const SCALE_FACTOR = 10;
 export const FIXED_RADIUS_PM = 30;
 export const FIXED_RADIUS_H_PM = 20;
 export const STICK_RADIUS = 0.06;

@@ -21,6 +21,7 @@ import {
 } from "../state/app-state";
 import { makeCsgBrushWorker } from "../utils/workers/cgsBrushWorker";
 import { BrushData } from "../utils/workers/cgsBrushCalcs";
+import { scalePosition, scaleRadius } from "../utils/scaleModelData";
 
 import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
@@ -56,11 +57,12 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
         });
 
         const geometry = new SphereGeometry(
-          elementData?.radius.vanderwaals,
+          scaleRadius(elementData?.radius.vanderwaals),
           24,
           24
         );
-        geometry.translate(atom.x, atom.y, atom.z);
+        const position = scalePosition(atom.x, atom.y, atom.z);
+        geometry.translate(position.x, position.y, position.z);
 
         return {
           materialJson: material.toJSON(),
