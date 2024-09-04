@@ -16,7 +16,7 @@ import {
   canvasStateAtom,
 } from "../state/app-state";
 import { ElementCardList } from "./ElementCardList";
-import { exportToSTL } from "../utils/exportToStl";
+import { exportToSTL, exportGLTF } from "../utils/exporters";
 import { getDateTimeStamp } from "../utils/getDateTimeStamp";
 
 // import ghLogo from "../assets/github-mark-white.svg";
@@ -112,6 +112,32 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
             a.download = filename;
             a.click();
             URL.revokeObjectURL(url);
+          }
+        },
+        {
+          disabled: !canvasState,
+        }
+      ),
+      "Export model to gltf": button(
+        () => {
+          if (canvasState) {
+            exportGLTF(canvasState.scene).then((gltfBuffer) => {
+              const filename = `${molecule}-${getDateTimeStamp()}.gltf`;
+              let blob: Blob;
+              if (gltfBuffer instanceof ArrayBuffer) {
+                blob = new Blob([gltfBuffer], {
+                  type: "application/octet-stream",
+                });
+              } else {
+                throw new Error("non-binary GLTF export not supported");
+              }
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = filename;
+              a.click();
+              URL.revokeObjectURL(url);
+            });
           }
         },
         {
