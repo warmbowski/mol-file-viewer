@@ -7,15 +7,19 @@ interface BallElementsProps {
 }
 
 export function BallElements({ atoms }: BallElementsProps) {
-  return atoms.map((atom, index) => {
-    const { x, y, z, symbol } = atom;
+  return (
+    <group name="atoms">
+      {atoms.map((atom, index) => {
+        const { x, y, z, symbol } = atom;
 
-    return (
-      <BallElement
-        key={`${symbol}${index}`}
-        symbol={symbol}
-        position={scalePosition(x, y, z)}
-      />
-    );
-  });
+        return (
+          <BallElement
+            key={`${symbol}${index}`}
+            symbol={symbol}
+            position={scalePosition(x, y, z)}
+          />
+        );
+      })}
+    </group>
+  );
 }

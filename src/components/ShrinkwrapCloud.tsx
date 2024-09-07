@@ -15,7 +15,7 @@ interface VanDerWaalsCloudsProps {
   atoms: MoleculeAtom[];
 }
 
-export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
+export function ShrinkWrapCloud({ atoms }: VanDerWaalsCloudsProps) {
   const [periodicTable] = useAtom(periodicTableAtom);
 
   const cloud = useMemo(() => {
@@ -52,5 +52,5 @@ export function VanDerWaalsClouds({ atoms }: VanDerWaalsCloudsProps) {
     return mesh;
   }, [atoms, periodicTable]);
 
-  return cloud && <primitive object={cloud} />;
+  return <group name="cloud-sw">{cloud && <primitive object={cloud} />}</group>;
 }

@@ -4,7 +4,7 @@ import { ColorTheme } from "../constants/colorThemes.noformat";
 import { RootState } from "@react-three/fiber";
 
 export type RadiusType = keyof ElementData["radius"];
-export type CloudType = "none" | "atomic" | "vanderwaals";
+export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
 
 const atomWithLocalStorage = <T>(
   key: string,

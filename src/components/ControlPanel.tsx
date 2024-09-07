@@ -64,6 +64,7 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
           None: "none",
           Atomic: "atomic",
           "Van der Waals": "vanderwaals",
+          Shrinkwrap: "shrinkwrap",
         },
         onChange: setCloudType,
       },
@@ -83,14 +84,14 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
         value: molecule,
         label: "Pick molecule",
         options: {
-          "Ethane (6324)": "6324",
-          "Ethanol (682)": "682",
-          "Benzoic acid (238)": "238",
-          "Caffiene (2424)": "2424",
-          "Catnip (141747)": "141747",
-          "Dichlorodiphenyldichloroethylene (2927)": "2927",
-          "Silicon Compound (64-17-5)": "64-17-5",
-          "Phosphazene Compound (C60H42N3O6P3)": "C60H42N3O6P3",
+          Ethane: "6324",
+          Ethanol: "682",
+          "Benzoic acid": "238",
+          Caffiene: "2424",
+          Catnip: "141747",
+          Dichlorodiphenyldichloroethylene: "2927",
+          "Silicon Compound": "CT1066647122",
+          "Phosphazene Compound": "CT1083511253",
           custom: "custom",
         },
         onChange: setMolecule,
@@ -106,12 +107,7 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
           if (canvasState) {
             const filename = `${molecule}-${getDateTimeStamp()}.stl`;
             const stl = exportToSTL(canvasState.scene);
-            const url = URL.createObjectURL(stl);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
+            downloadBlob(stl, filename);
           }
         },
         {
@@ -122,21 +118,20 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
         () => {
           if (canvasState) {
             exportGLTF(canvasState.scene).then((gltfBuffer) => {
-              const filename = `${molecule}-${getDateTimeStamp()}.gltf`;
+              let filename = `${molecule}-${getDateTimeStamp()}`;
               let blob: Blob;
               if (gltfBuffer instanceof ArrayBuffer) {
                 blob = new Blob([gltfBuffer], {
                   type: "application/octet-stream",
                 });
+                filename += ".glb";
               } else {
-                throw new Error("non-binary GLTF export not supported");
+                blob = new Blob([JSON.stringify(gltfBuffer, null, 2)], {
+                  type: "text/plain",
+                });
+                filename += ".gltf";
               }
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = filename;
-              a.click();
-              URL.revokeObjectURL(url);
+              downloadBlob(blob, filename);
             });
           }
         },
@@ -191,4 +186,13 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
       </div> */}
     </>
   );
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }

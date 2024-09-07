@@ -103,5 +103,9 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
     return () => setProcessing(0);
   }, [csgJson, isFetching, setProcessing]);
 
-  return <group>{cloudMesh && <primitive object={cloudMesh} />}</group>;
+  return (
+    <group name="cloud-vdw">
+      {cloudMesh && <primitive object={cloudMesh} />}
+    </group>
+  );
 }

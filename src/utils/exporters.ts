@@ -15,8 +15,8 @@ export const exportToSTL = (scene: Object3D) => {
     binary: true,
   };
   const copyScene = scene.clone();
-  // scale the scene to 10x so it's easier to see in the slicer software
-  copyScene.scale.set(10, 10, 10);
+
+  filterOutClouds(copyScene);
 
   const stl = new STLExporter().parse(copyScene, options);
   return new Blob([stl], { type: "text/plain" });
@@ -24,9 +24,21 @@ export const exportToSTL = (scene: Object3D) => {
 
 export const exportGLTF = (scene: Object3D) => {
   const options: GLTFExporterOptions = {
-    binary: true,
+    binary: false,
   };
   const copyScene = scene.clone();
 
+  filterOutClouds(copyScene);
+
   return new GLTFExporter().parseAsync(copyScene, options);
+};
+
+const filterOutClouds = (scene: Object3D) => {
+  scene.traverse((child) => {
+    if (child.name.startsWith("cloud")) {
+      console.log(child.name);
+      const parent = child.parent;
+      parent?.remove(child);
+    }
+  });
 };

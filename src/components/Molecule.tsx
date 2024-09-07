@@ -13,6 +13,7 @@ import { MoleculeObject } from "../utils/readMolfile";
 import { Scene } from "three";
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
+import { ShrinkWrapCloud } from "./ShrinkwrapCloud";
 
 export function Molecule({
   molecule,
@@ -34,13 +35,14 @@ export function Molecule({
 
   return (
     atoms.length && (
-      <group>
+      <group name="molecule">
         {!hideSticks && <StickBonds atoms={atoms} bonds={bonds} />}
         {!hideBalls && <BallElements atoms={atoms} />}
         {cloudType === "atomic" && <AtomicClouds atoms={atoms} />}
         {cloudType === "vanderwaals" && (
           <VanDerWaalsClouds atoms={atoms} cacheKey={base64} />
         )}
+        {cloudType === "shrinkwrap" && <ShrinkWrapCloud atoms={atoms} />}
       </group>
     )
   );

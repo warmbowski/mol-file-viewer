@@ -7,7 +7,7 @@ interface AtomicCloudsProps {
 
 export function AtomicClouds({ atoms }: AtomicCloudsProps) {
   return (
-    <group>
+    <group name="cloud-atom">
       {atoms.map((atom) => (
         <AtomicCloud key={atom.id} atom={atom} />
       ))}

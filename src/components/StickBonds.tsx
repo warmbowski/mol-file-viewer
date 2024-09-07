@@ -7,17 +7,21 @@ interface StickBondsProps {
 }
 
 export function StickBonds({ atoms, bonds }: StickBondsProps) {
-  return bonds.map((bond, index) => {
-    const { atom1, atom2, type } = bond;
+  return (
+    <group name="bonds">
+      {bonds.map((bond, index) => {
+        const { atom1, atom2, type } = bond;
 
-    return (
-      <StickBond
-        key={index}
-        atoms={atoms}
-        atom1={atom1}
-        atom2={atom2}
-        bondType={type}
-      />
-    );
-  });
+        return (
+          <StickBond
+            key={index}
+            atoms={atoms}
+            atom1={atom1}
+            atom2={atom2}
+            bondType={type}
+          />
+        );
+      })}
+    </group>
+  );
 }
