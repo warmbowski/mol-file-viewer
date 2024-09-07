@@ -114,7 +114,7 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
           disabled: !canvasState,
         }
       ),
-      "Export model to gltf": button(
+      "Export model to glb": button(
         () => {
           if (canvasState) {
             exportGLTF(canvasState.scene).then((gltfBuffer) => {
