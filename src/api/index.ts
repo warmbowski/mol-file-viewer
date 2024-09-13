@@ -12,3 +12,10 @@ export const compoundByNameOrIdUrl = (
   by: "name" | "cid" = "name",
   output: "json" | "sdf" | "png" = "json"
 ) => `${pubchemBaseUrl}/rest/pug/compound/${by}/${search}/${output}`;
+
+/**
+ * Only use * exports at root of a module or alias
+ */
+export * from "./hooks";
+export * from "./getMolecule";
+export * from "./types";

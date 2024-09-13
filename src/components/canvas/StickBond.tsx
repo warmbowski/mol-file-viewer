@@ -8,11 +8,9 @@ import {
   MeshStandardMaterial,
 } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
-import { STICK_RADIUS, STICK_RADIUS_AROMATIC } from "../constants";
-import { MoleculeAtom } from "../utils/readMolfile";
-import { glsl } from "../utils/glslLiteral";
-import { debugAtom, noHAtom, periodicTableAtom } from "../state/app-state";
-import { scalePosition, scaleRadius } from "../utils/scaleModelData";
+import { STICK_RADIUS, STICK_RADIUS_AROMATIC } from "@constants";
+import { MoleculeAtom, glsl, scalePosition, scaleRadius } from "@utils";
+import { debugAtom, noHAtom, periodicTableAtom } from "@state";
 
 interface StickBondProps {
   atoms: MoleculeAtom[];

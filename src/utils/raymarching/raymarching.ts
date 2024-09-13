@@ -31,11 +31,11 @@ import {
   WebGLRenderTarget,
   WebGLRenderer,
 } from "three";
-import lighting from "./shaders/lighting.glsl?raw";
-import raymarcherFragment from "./shaders/raymarcher.frag?raw";
-import raymarcherVertex from "./shaders/raymarcher.vert?raw";
-import screenFragment from "./shaders/screen.frag?raw";
-import screenVertex from "./shaders/screen.vert?raw";
+import lighting from "./assets/shaders/lighting.glsl?raw";
+import raymarcherFragment from "./assets/shaders/raymarcher.frag?raw";
+import raymarcherVertex from "./assets/shaders/raymarcher.vert?raw";
+import screenFragment from "./assets/shaders/screen.frag?raw";
+import screenVertex from "./assets/shaders/screen.vert?raw";
 
 export interface PBRMaterial {
   color: Color;
@@ -141,7 +141,7 @@ export enum Operation {
   SUBSTRACTION,
 }
 
-class Raymarcher extends Mesh<PlaneGeometry, RawShaderMaterial> {
+export class Raymarcher extends Mesh<PlaneGeometry, RawShaderMaterial> {
   resolution: number;
   declare material: RawShaderMaterial;
   raymarcher: Mesh<PlaneGeometry, RawShaderMaterial>;
@@ -476,5 +476,3 @@ class Raymarcher extends Mesh<PlaneGeometry, RawShaderMaterial> {
     return _bounds[layer].makeEmpty();
   }
 }
-
-export default Raymarcher;

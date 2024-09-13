@@ -2,14 +2,9 @@ import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { MeshProps } from "@react-three/fiber";
 import { Color } from "three";
-import {
-  ballRadiusAtom,
-  debugAtom,
-  noHAtom,
-  periodicTableAtom,
-} from "../state/app-state";
-import { ElementSymbol } from "../constants/types";
-import { scaleRadius } from "../utils/scaleModelData";
+import { ballRadiusAtom, debugAtom, noHAtom, periodicTableAtom } from "@state";
+import { ElementSymbol } from "@constants";
+import { scaleRadius } from "@utils";
 
 interface BallElementProps extends MeshProps {
   symbol: ElementSymbol;

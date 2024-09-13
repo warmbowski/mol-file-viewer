@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useAtom } from "jotai";
 import { button, useControls, Leva } from "leva";
 import { PTableSymbol } from "periodic-table-data-complete";
-import { useUploadMolecule } from "../api/hooks/useUploadMolecule";
+import { useUploadMolecule } from "@api";
 import {
   debugAtom,
   noHAtom,
@@ -14,10 +14,10 @@ import {
   colorThemeAtom,
   processingWorkerAtom,
   canvasStateAtom,
-} from "../state/app-state";
+} from "../../state/app-state";
 import { ElementCardList } from "./ElementCardList";
-import { exportToSTL, exportGLTF } from "../utils/exporters";
-import { getDateTimeStamp } from "../utils/getDateTimeStamp";
+import { exportToSTL, exportGLTF } from "../../utils/exporters";
+import { getDateTimeStamp } from "../../utils/getDateTimeStamp";
 
 // import ghLogo from "../assets/github-mark-white.svg";
 

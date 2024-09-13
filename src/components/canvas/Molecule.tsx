@@ -4,12 +4,12 @@ import {
   cloudTypeAtom,
   hideSticksAtom,
   canvasStateAtom,
-} from "../state/app-state";
+} from "@state";
 import { StickBonds } from "./StickBonds";
 import { BallElements } from "./BallElements";
 import { AtomicClouds } from "./AtomicClouds";
 import { VanDerWaalsClouds } from "./VanDerWaalsCloud";
-import { MoleculeObject } from "../utils/readMolfile";
+import { MoleculeObject } from "@utils";
 import { Scene } from "three";
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";

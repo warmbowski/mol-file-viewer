@@ -3,13 +3,12 @@ import { useAtom } from "jotai";
 import { Color, Mesh, ShaderMaterial, SphereGeometry, Vector3 } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
-import { DEFAULT_CLOUD_COLOR } from "../constants";
-import { MoleculeAtom } from "../utils/readMolfile";
-import { periodicTableAtom } from "../state/app-state";
-import { scalePosition, scaleRadius } from "../utils/scaleModelData";
+import { DEFAULT_CLOUD_COLOR } from "@constants";
+import { MoleculeAtom, scalePosition, scaleRadius } from "@utils";
+import { periodicTableAtom } from "@state";
 
-import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
-import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
+import fragmentShader from "@/src/assets/shaders/electronCloudAltFragment.glsl?raw";
+import vertexShader from "@/src/assets/shaders/electronCloudVertex.glsl?raw";
 
 interface VanDerWaalsCloudsProps {
   atoms: MoleculeAtom[];

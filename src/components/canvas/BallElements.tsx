@@ -1,6 +1,5 @@
 import { BallElement } from "./BallElement";
-import { MoleculeAtom } from "../utils/readMolfile";
-import { scalePosition } from "../utils/scaleModelData";
+import { MoleculeAtom, scalePosition } from "@utils";
 
 interface BallElementsProps {
   atoms: MoleculeAtom[];

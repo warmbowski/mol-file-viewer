@@ -1,8 +1,8 @@
 import { useAtom } from "jotai";
-import { periodicTableAtom } from "../state/app-state";
+import { periodicTableAtom } from "@state";
 import { findContrastColor } from "color-contrast-finder";
 import { useMemo } from "react";
-import { ElementData } from "../constants/periodicTable";
+import { ElementData } from "@constants";
 import { PTableSymbol } from "periodic-table-data-complete";
 
 function ElementCard({ elementData }: { elementData: ElementData }) {

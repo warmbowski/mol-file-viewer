@@ -1,4 +1,4 @@
-import { MoleculeAtom } from "../utils/readMolfile";
+import { MoleculeAtom } from "@utils";
 import { AtomicCloud } from "./AtomicCloud";
 
 interface AtomicCloudsProps {

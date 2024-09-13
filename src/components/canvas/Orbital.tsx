@@ -8,11 +8,11 @@ import {
   SphereGeometry,
   Vector3,
 } from "three";
-import { DEFAULT_CLOUD_COLOR } from "../constants";
-import { debugAtom } from "../state/app-state";
+import { DEFAULT_CLOUD_COLOR } from "@constants";
+import { debugAtom } from "@state";
 
-import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
-import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
+import fragmentShader from "@/src/assets/shaders/electronCloudAltFragment.glsl?raw";
+import vertexShader from "@/src/assets/shaders/electronCloudVertex.glsl?raw";
 
 interface OrbitalProps {
   radius?: number;

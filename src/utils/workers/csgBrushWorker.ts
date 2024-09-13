@@ -4,10 +4,10 @@ interface CsgBrushWorkerOptions {
   onMessage?: (event: MessageEvent) => void;
 }
 export const makeCsgBrushWorker = (options: CsgBrushWorkerOptions) => {
-  const csgBrushWorker = new ComlinkWorker<typeof import("./cgsBrushCalcs.js")>(
-    new URL("./cgsBrushCalcs.js", import.meta.url),
+  const csgBrushWorker = new ComlinkWorker<typeof import("./csgBrushCalcs.js")>(
+    new URL("./csgBrushCalcs.js", import.meta.url),
     {
-      name: "cgsBrushCalcs",
+      name: "csgBrushCalcs",
       type: "module",
     }
   );

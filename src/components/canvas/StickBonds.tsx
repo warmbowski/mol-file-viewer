@@ -1,4 +1,4 @@
-import { MoleculeAtom, MoleculeBond } from "../utils/readMolfile";
+import { MoleculeAtom, MoleculeBond } from "@utils";
 import { StickBond } from "./StickBond";
 
 interface StickBondsProps {

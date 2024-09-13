@@ -12,19 +12,22 @@ import {
   SphereGeometry,
 } from "three";
 import { useQuery } from "@tanstack/react-query";
-import { MoleculeAtom } from "../utils/readMolfile";
+import { MoleculeAtom } from "../../utils/readMolfile";
 import {
   colorThemeAtom,
   debugAtom,
   periodicTableAtom,
   processingWorkerAtom,
-} from "../state/app-state";
-import { makeCsgBrushWorker } from "../utils/workers/cgsBrushWorker";
-import { BrushData } from "../utils/workers/cgsBrushCalcs";
-import { scalePosition, scaleRadius } from "../utils/scaleModelData";
+} from "@state";
+import {
+  makeCsgBrushWorker,
+  scalePosition,
+  scaleRadius,
+  BrushData,
+} from "@utils";
 
-import fragmentShader from "../shaders/electronCloudAltFragment.glsl?raw";
-import vertexShader from "../shaders/electronCloudVertex.glsl?raw";
+import fragmentShader from "@/src/assets/shaders/electronCloudAltFragment.glsl?raw";
+import vertexShader from "@/src/assets/shaders/electronCloudVertex.glsl?raw";
 
 const meshLoader = new ObjectLoader();
 
@@ -83,7 +86,7 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
             setProcessing(100);
           }
         },
-      }).cgsBrushCalcs(brushData),
+      }).csgBrushCalcs(brushData),
     staleTime: Infinity,
   });
 

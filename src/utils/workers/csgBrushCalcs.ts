@@ -12,7 +12,7 @@ export interface BrushData {
   geometryJson: BufferGeometryJSON;
 }
 
-export function cgsBrushCalcs(brushData: BrushData[]): MeshJSON | undefined {
+export function csgBrushCalcs(brushData: BrushData[]): MeshJSON | undefined {
   const evaluator = new Evaluator();
   const bufferLoader = new BufferGeometryLoader();
   const materialLoader = new MaterialLoader();

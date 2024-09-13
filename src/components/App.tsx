@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { Environment, OrbitControls, Progress, Text } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Molecule } from "./Molecule";
+import { Molecule } from "./canvas/Molecule";
 import { debugAtom, moleculeAtom } from "../state/app-state";
-import { ControlPanel } from "./ControlPanel";
+import { ControlPanel } from "./dom/ControlPanel";
 import { useGetMolecule } from "../api/hooks/useGetMolecule";
 import { SCALE_FACTOR } from "../constants";
 

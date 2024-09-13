@@ -1,9 +1,8 @@
 import { useAtom } from "jotai";
-import { MoleculeAtom } from "../utils/readMolfile";
-import { noHAtom, periodicTableAtom } from "../state/app-state";
+import { noHAtom, periodicTableAtom } from "@state";
 import { SOrbital } from "./Orbital";
 import { useMemo } from "react";
-import { scalePosition, scaleRadius } from "../utils/scaleModelData";
+import { MoleculeAtom, scalePosition, scaleRadius } from "@utils";
 
 export function AtomicCloud({ atom }: { atom: MoleculeAtom }) {
   const [noH] = useAtom(noHAtom);

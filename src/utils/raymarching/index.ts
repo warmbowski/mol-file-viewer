@@ -2,6 +2,5 @@
  * lib code from https://github.com/MelonCode/r3f-raymarching/tree/main/src/lib
  */
 
-import Raymarcher from "./raymarching";
+// TODO: fix barrel exports
 export * from "./raymarching";
-export default Raymarcher;
