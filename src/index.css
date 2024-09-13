@@ -46,6 +46,10 @@ a {
   z-index: 110;
 }
 
+.processing-error {
+  background-color: lightcoral;
+}
+
 .element-list {
   position: absolute;
   top: 0;

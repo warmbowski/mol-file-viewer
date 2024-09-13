@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useAtom } from "jotai";
 import { button, useControls, Leva } from "leva";
-import { PTableSymbol } from "periodic-table-data-complete";
 import { useUploadMolecule } from "@api";
 import {
   debugAtom,
@@ -12,16 +11,11 @@ import {
   ballRadiusAtom,
   cloudTypeAtom,
   colorThemeAtom,
-  processingWorkerAtom,
   canvasStateAtom,
-} from "../../state/app-state";
-import { ElementCardList } from "./ElementCardList";
-import { exportToSTL, exportGLTF } from "../../utils/exporters";
-import { getDateTimeStamp } from "../../utils/getDateTimeStamp";
+} from "@state";
+import { getDateTimeStamp, exportToSTL, exportGLTF } from "@utils";
 
-// import ghLogo from "../assets/github-mark-white.svg";
-
-export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
+export function ControlPanel() {
   const [debug, setDebug] = useAtom(debugAtom);
   const [noH, setNoH] = useAtom(noHAtom);
   const [hideBalls, setHideBalls] = useAtom(hideBallsAtom);
@@ -30,7 +24,6 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
   const [molecule, setMolecule] = useAtom(moleculeAtom);
-  const [processing] = useAtom(processingWorkerAtom);
   const [canvasState] = useAtom(canvasStateAtom);
 
   const [, setOptions] = useControls(
@@ -160,7 +153,6 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
   return (
     <>
       <Leva collapsed={window.innerWidth <= 768 ? true : false} />
-      <ElementCardList symbols={symbols} />
       <input
         type="file"
         id="file-input"
@@ -168,22 +160,6 @@ export function ControlPanel({ symbols }: { symbols: PTableSymbol[] }) {
         hidden
         onChange={handleFileSelect}
       />
-      {processing && (
-        <div className="processing">
-          <div>Calculating Van der Waals cloud...</div>
-          <progress value={processing} max="100" style={{ width: "100%" }} />
-        </div>
-      )}
-      {/* <div className="repo-link">
-        <img src={ghLogo} alt="GitHub logo" style={{ height: "1.5em" }} />
-        <a
-          href="https://github.com/warmbowski/mol-file-viewer"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Mol File Viewer repository
-        </a>
-      </div> */}
     </>
   );
 }
