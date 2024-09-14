@@ -24,8 +24,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (id.includes("three") || id.includes("tslib")) {
-            return "@threejs";
+          if (id.includes("node_modules/react")) {
+            return "@react";
+          }
+          if (
+            id.includes("node_modules/three") ||
+            id.includes("node_modules/@react-three")
+          ) {
+            return "@three";
           }
           if (id.includes("periodic-table-data-complete")) {
             return "@periodic-table-data";
