@@ -1,11 +1,12 @@
 import { useAtom } from "jotai";
-import { Environment, OrbitControls, Progress } from "@react-three/drei";
+import { AppShell } from "@mantine/core";
+import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Molecule } from "./canvas/Molecule";
-import { debugAtom, moleculeAtom } from "../state/app-state";
-import { useGetMolecule } from "../api/hooks/useGetMolecule";
-import { SCALE_FACTOR } from "../constants";
-import { Dom } from "./dom";
+import { debugAtom, moleculeAtom } from "@state";
+import { useGetMolecule } from "@api";
+import { FOOTER_HEIGHT, SCALE_FACTOR } from "@constants";
+import { Molecule, Progress } from "./canvas";
+import { Dom, FooterBar } from "./dom";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
@@ -13,26 +14,32 @@ export default function App() {
   const { data, isFetching } = useGetMolecule(molecule);
 
   return (
-    <>
-      <Canvas
-        camera={{
-          position: [0, 0, 13 * SCALE_FACTOR],
-          fov: 25,
-          near: 0.1,
-          far: 3000,
-        }}
-      >
-        {debug && <axesHelper args={[10]} />}
-        <OrbitControls />
-        <ambientLight intensity={Math.PI} />
-        <pointLight position={[0, -70, 70]} intensity={5000} />
-        <pointLight position={[0, 70, -70]} intensity={5000} />
-        {!isFetching && data ? <Molecule molecule={data} /> : <Progress />}
-        <Environment background blur={0.75}>
-          <color attach="background" args={[0x333533]} />
-        </Environment>
-      </Canvas>
-      <Dom />
-    </>
+    <AppShell footer={{ height: FOOTER_HEIGHT }}>
+      <AppShell.Main h={`calc(100% - ${FOOTER_HEIGHT}px)`} pos="relative">
+        <Canvas
+          style={{ position: "absolute" }}
+          camera={{
+            position: [0, 0, 13 * SCALE_FACTOR],
+            fov: 25,
+            near: 0.1,
+            far: 3000,
+          }}
+        >
+          {debug && <axesHelper args={[10]} />}
+          <OrbitControls />
+          <ambientLight intensity={Math.PI} />
+          <pointLight position={[0, -70, 70]} intensity={5000} />
+          <pointLight position={[0, 70, -70]} intensity={5000} />
+          {isFetching ? <Progress /> : data && <Molecule molecule={data} />}
+          <Environment background blur={0.75}>
+            <color attach="background" args={[0x333533]} />
+          </Environment>
+        </Canvas>
+        <Dom />
+      </AppShell.Main>
+      <AppShell.Footer>
+        <FooterBar />
+      </AppShell.Footer>
+    </AppShell>
   );
 }

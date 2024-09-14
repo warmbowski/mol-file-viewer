@@ -52,14 +52,12 @@ a {
 
 .element-list {
   position: absolute;
-  top: 0;
-  left: 0;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: flex-start;
-  background-color: "transparent";
+  background-color: transparent;
   font-size: 10px;
   gap: 8px;
   padding: 1em;

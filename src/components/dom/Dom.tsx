@@ -17,11 +17,11 @@ export function Dom() {
   }, [data]);
 
   return !error ? (
-    <div>
+    <>
       <ControlPanel />
-      {symbols.size && <ElementCardList symbols={[...symbols]} />}
+      {symbols.size > 0 && <ElementCardList symbols={[...symbols]} />}
       <ProcessingToast />
-    </div>
+    </>
   ) : (
     <div className="processing processing-error">
       <div>{`Problem Loading Mol/SDF file for molecule: ${molecule}. ${

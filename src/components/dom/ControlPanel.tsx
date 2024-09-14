@@ -152,7 +152,10 @@ export function ControlPanel() {
 
   return (
     <>
-      <Leva collapsed={window.innerWidth <= 768 ? true : false} />
+      <Leva
+        collapsed={window.innerWidth <= 768 ? true : false}
+        titleBar={{ title: "Settings" }}
+      />
       <input
         type="file"
         id="file-input"
