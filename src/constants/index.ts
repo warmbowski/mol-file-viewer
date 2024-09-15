@@ -15,9 +15,9 @@ const MOLECULE_OPTIONS = {
   caffeine: "2424",
   nepetalactone: "141747",
   dichlorodiphenyldichloroethylene: "2927",
-  "Silicon Compound": "CT1066647122",
-  cyclotriphosphazene: "CT1083511253",
-  cyclotetraphosphazene: "CT1083511253",
+  // "Silicon Compound": "CT1066647122",
+  cyclotriphosphazene: "",
+  cyclotetraphosphazene: "",
 };
 export const DEFAULT_MOLECULE_OPTIONS = Object.keys(MOLECULE_OPTIONS);
 
