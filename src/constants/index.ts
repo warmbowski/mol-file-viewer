@@ -1,4 +1,6 @@
 export const SCALE_FACTOR = 10;
+export const FOV = 25;
+export const INIT_CAMERA_Z = 13 * SCALE_FACTOR;
 export const FIXED_RADIUS_PM = 30;
 export const FIXED_RADIUS_H_PM = 20;
 export const STICK_RADIUS = 0.06;
@@ -7,6 +9,8 @@ export const DEFAULT_CLOUD_COLOR = 0x4d99ff;
 export const HEADER_HEIGHT = 48;
 export const FOOTER_HEIGHT = 48;
 
+// remove this object and just use the array of keys once
+// the mol files are deleted from the public folder
 const MOLECULE_OPTIONS = {
   water: "",
   ethane: "6324",

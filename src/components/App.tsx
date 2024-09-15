@@ -3,7 +3,7 @@ import { AppShell } from "@mantine/core";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { debugAtom, pubChemMoleculeAtom } from "@state";
-import { FOOTER_HEIGHT, SCALE_FACTOR } from "@constants";
+import { FOOTER_HEIGHT, FOV, INIT_CAMERA_Z } from "@constants";
 import { Molecule, Progress } from "./canvas";
 import { Dom, FooterBar } from "./dom";
 import { useGetConformerMolecule } from "@api";
@@ -23,8 +23,8 @@ export default function App() {
         <Canvas
           style={{ position: "absolute" }}
           camera={{
-            position: [0, 0, 13 * SCALE_FACTOR],
-            fov: 25,
+            position: [0, 0, INIT_CAMERA_Z],
+            fov: FOV,
             near: 0.1,
             far: 3000,
           }}

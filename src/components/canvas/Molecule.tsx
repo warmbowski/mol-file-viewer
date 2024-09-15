@@ -14,6 +14,7 @@ import { Scene } from "three";
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import { ShrinkWrapCloud } from "./ShrinkwrapCloud";
+import { FOV, SCALE_FACTOR } from "@constants";
 
 export function Molecule({
   molecule,
@@ -32,6 +33,16 @@ export function Molecule({
   useEffect(() => {
     setCanvasState(() => rootState);
   }, [rootState, setCanvasState]);
+
+  useEffect(() => {
+    const { x: xMin, y: yMin, z: zMin } = molecule.extents.min;
+    const { x: xMax, y: yMax, z: zMax } = molecule.extents.max;
+    const maxDim = Math.max(xMax, yMax, zMax);
+    const calcedZ = Math.abs(maxDim / 2 / Math.tan(FOV / 2)) * SCALE_FACTOR;
+
+    rootState.camera.lookAt(xMin, yMin, zMin);
+    rootState.camera.position.setZ(calcedZ);
+  }, [molecule, rootState.camera]);
 
   return (
     atoms.length && (
