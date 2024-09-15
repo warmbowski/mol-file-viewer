@@ -1,4 +1,4 @@
-import ghLogo from "@/src/assets/github-mark-white.svg";
+import ghLogo from "@assets/github-mark-white.svg";
 
 export function RepoLink() {
   return (

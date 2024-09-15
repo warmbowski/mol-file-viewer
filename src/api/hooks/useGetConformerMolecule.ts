@@ -1,18 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { MOLECULE_OPTIONS } from "@constants";
-import { getMolecule } from "../getMolecule";
-import { getConformerList } from "../getConformerList";
-import { getConformerMolecule } from "../getConformerMolecule";
+import { getConformerList } from "../async/getConformerList";
+import { getConformerMolecule } from "../async/getConformerMolecule";
+import { CompoundNameOrId } from "../types";
 
-export function useGetConformerMolecule(text: string, by: "name" | "cid") {
+export function useGetConformerMolecule(
+  text: CompoundNameOrId["text"],
+  by: CompoundNameOrId["by"]
+) {
   return useQuery({
     queryKey: ["molecule", by, text],
     queryFn: async () => {
-      // temporary compatiblity fix until settings are changed
-      if (Object.values(MOLECULE_OPTIONS).includes(text)) {
-        return await getMolecule(text);
-      }
-
       const conformerList = await getConformerList(text, by);
       if (conformerList.InformationList.Information[0].ConformerID.length > 0) {
         const conformerId =
@@ -22,6 +19,6 @@ export function useGetConformerMolecule(text: string, by: "name" | "cid") {
         throw new Error("No conformers found");
       }
     },
-    enabled: !!text,
+    enabled: !!text && text !== "custom",
   });
 }

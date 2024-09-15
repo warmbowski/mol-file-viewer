@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { ElementData, PeriodicTable } from "../constants/periodicTable";
 import { ColorTheme } from "../constants/colorThemes.noformat";
 import { RootState } from "@react-three/fiber";
+import { CompoundNameOrId } from "@api";
 
 export type RadiusType = keyof ElementData["radius"];
 export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
@@ -9,7 +10,7 @@ export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
 const atomWithLocalStorage = <T>(
   key: string,
   initialValue: T,
-  doNotPersistValues: T[] = []
+  doNotPersistFunction?: (nextValue: T) => boolean
 ) => {
   const getInitialValue = () => {
     const item = localStorage.getItem(key);
@@ -25,45 +26,48 @@ const atomWithLocalStorage = <T>(
       const nextValue =
         typeof update === "function" ? update(get(baseAtom)) : update;
       set(baseAtom, nextValue);
-      if (!doNotPersistValues.includes(nextValue)) {
-        localStorage.setItem(key, JSON.stringify(nextValue));
+      if (doNotPersistFunction) {
+        if (doNotPersistFunction(nextValue)) {
+          return;
+        }
       }
+      localStorage.setItem(key, JSON.stringify(nextValue));
     }
   );
   return derivedAtom;
 };
 
 // Persisted
-export const debugAtom = atomWithLocalStorage("nfv-debug", false);
-export const noHAtom = atomWithLocalStorage("nfv-noHAtom", false);
-export const hideBallsAtom = atomWithLocalStorage("nfv-hideBalls", false);
-export const hideSticksAtom = atomWithLocalStorage("nfv-hideSticks", false);
+export const debugAtom = atomWithLocalStorage("mfv-debug", false);
+export const noHAtom = atomWithLocalStorage("mfv-noHAtom", false);
+export const hideBallsAtom = atomWithLocalStorage("mfv-hideBalls", false);
+export const hideSticksAtom = atomWithLocalStorage("mfv-hideSticks", false);
 export const colorThemeAtom = atomWithLocalStorage<ColorTheme>(
-  "nfv-colorTheme",
+  "mfv-colorTheme",
   ColorTheme.ALT
 );
-// export const hideCloudsAtom = atomWithLocalStorage("nfv-hadeClouds", false);
 export const cloudTypeAtom = atomWithLocalStorage<CloudType>(
-  "nfv-cloud",
+  "mfv-cloud",
   "atomic"
 );
 export const ballRadiusAtom = atomWithLocalStorage<RadiusType>(
-  "nfv-ballRadius",
+  "mfv-ballRadius",
   "fixed"
 );
-export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324", [
-  "custom",
-]);
-// export const pubChemMoleculeAtom = atomWithLocalStorage(
-//   "nfv-pubChemMolecule",
-//   ""
-// );
+export const pubChemMoleculeAtom =
+  atomWithLocalStorage<CompoundNameOrId | null>(
+    "mfv-selected-molecule",
+    {
+      text: "water",
+      by: "name",
+    },
+    (nextValue) => nextValue?.text === "custom"
+  );
 
 // Not persisted
 export const canvasStateAtom = atom<RootState | null>(null);
 export const fileToDownloadAtom = atom<Blob | null>(null);
 export const processingWorkerAtom = atom(0);
-export const pubChemMoleculeAtom = atom("");
 
 // derived
 export const periodicTableAtom = atom((get) => {

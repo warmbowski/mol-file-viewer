@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { AppShell } from "@mantine/core";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { debugAtom, moleculeAtom, pubChemMoleculeAtom } from "@state";
+import { debugAtom, pubChemMoleculeAtom } from "@state";
 import { FOOTER_HEIGHT, SCALE_FACTOR } from "@constants";
 import { Molecule, Progress } from "./canvas";
 import { Dom, FooterBar } from "./dom";
@@ -10,12 +10,10 @@ import { useGetConformerMolecule } from "@api";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
-  const [moleculeId] = useAtom(moleculeAtom);
   const [moleculeName] = useAtom(pubChemMoleculeAtom);
 
-  // const { data: molecule, isFetching } = useGetMolecule(moleculeId);
   const { data: molecule, isFetching } = useGetConformerMolecule(
-    moleculeName || moleculeId,
+    moleculeName?.text || "",
     "name"
   );
 

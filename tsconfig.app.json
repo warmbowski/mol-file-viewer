@@ -23,7 +23,7 @@
     /* paths */
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
+      "@assets/*": ["src/assets/*"],
       "@api": ["./src/api"],
       "@components/*": ["./src/components/*"],
       "@constants": ["./src/constants"],

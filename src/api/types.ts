@@ -5,7 +5,7 @@ export interface AutoCompleteResponse {
   total: number;
   dictionary_terms: {
     compound: string[];
-    // not used
+    // // ***** not used *****
     // assay: string[];
     // gene: string[];
     // taxonomy: string[];
@@ -34,3 +34,5 @@ export interface GetConformerOptions {
   conformerId: string;
   output?: "json" | "sdf" | "png";
 }
+
+export type CompoundNameOrId = Pick<GetCompundOptions, "text" | "by">;

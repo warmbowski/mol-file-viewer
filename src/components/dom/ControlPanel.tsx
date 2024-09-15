@@ -7,7 +7,6 @@ import {
   noHAtom,
   hideBallsAtom,
   hideSticksAtom,
-  moleculeAtom,
   ballRadiusAtom,
   cloudTypeAtom,
   colorThemeAtom,
@@ -15,7 +14,6 @@ import {
   pubChemMoleculeAtom,
 } from "@state";
 import { getDateTimeStamp, exportToSTL, exportGLTF } from "@utils";
-import { MOLECULE_OPTIONS } from "@constants";
 
 export function ControlPanel() {
   const [debug, setDebug] = useAtom(debugAtom);
@@ -25,11 +23,10 @@ export function ControlPanel() {
   const [cloudType, setCloudType] = useAtom(cloudTypeAtom);
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
-  const [moleculeId, setMoleculeId] = useAtom(moleculeAtom);
   const [moleculeName, setMoleculeName] = useAtom(pubChemMoleculeAtom);
   const [canvasState] = useAtom(canvasStateAtom);
 
-  const [, setOptions] = useControls(
+  useControls(
     () => ({
       debug: { value: debug, label: "Debug", onChange: setDebug },
       theme: {
@@ -76,15 +73,6 @@ export function ControlPanel() {
         },
         onChange: setBallRadius,
       },
-      molecule: {
-        value: moleculeId,
-        label: "Pick molecule",
-        options: MOLECULE_OPTIONS,
-        onChange: (value) => {
-          setMoleculeId(value);
-          setMoleculeName("");
-        },
-      },
       "Upload mol/sdf file": button(
         () => document.getElementById("file-input")?.click(),
         {
@@ -94,9 +82,7 @@ export function ControlPanel() {
       "Export model to stl": button(
         () => {
           if (canvasState) {
-            const filename = `${
-              moleculeName || moleculeId
-            }-${getDateTimeStamp()}.stl`;
+            const filename = `${moleculeName?.text}-${getDateTimeStamp()}.stl`;
             const stl = exportToSTL(canvasState.scene);
             downloadBlob(stl, filename);
           }
@@ -109,9 +95,7 @@ export function ControlPanel() {
         () => {
           if (canvasState) {
             exportGLTF(canvasState.scene).then((gltfBuffer) => {
-              let filename = `${
-                moleculeName || moleculeId
-              }-${getDateTimeStamp()}`;
+              let filename = `${moleculeName?.text}-${getDateTimeStamp()}`;
               let blob: Blob;
               if (gltfBuffer instanceof ArrayBuffer) {
                 blob = new Blob([gltfBuffer], {
@@ -142,20 +126,17 @@ export function ControlPanel() {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.item(0);
       if (!file) return;
-      setOptions({ molecule: "custom" });
+      setMoleculeName({ text: "custom", by: "name" });
       await uploadMolFile.mutateAsync(file);
       // reset input for subsequent upload
       e.target.value = "";
     },
-    [setOptions, uploadMolFile]
+    [setMoleculeName, uploadMolFile]
   );
 
   return (
     <>
-      <Leva
-        collapsed={window.innerWidth <= 768 ? true : false}
-        titleBar={{ title: "Settings" }}
-      />
+      <Leva collapsed={true} titleBar={{ title: "Settings" }} />
       <input
         type="file"
         id="file-input"

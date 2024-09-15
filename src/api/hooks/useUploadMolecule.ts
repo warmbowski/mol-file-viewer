@@ -10,7 +10,7 @@ export function useUploadMolecule() {
       return readMolFile(molFile);
     },
     onSuccess: (molecule) => {
-      queryClient.setQueryData(["molecule", "custom"], molecule);
+      queryClient.setQueryData(["molecule", "name", "custom"], molecule);
     },
   });
 }

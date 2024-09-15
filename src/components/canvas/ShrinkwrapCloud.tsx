@@ -7,8 +7,8 @@ import { DEFAULT_CLOUD_COLOR } from "@constants";
 import { MoleculeAtom, scalePosition, scaleRadius } from "@utils";
 import { periodicTableAtom } from "@state";
 
-import fragmentShader from "@/src/assets/shaders/electronCloudAltFragment.glsl?raw";
-import vertexShader from "@/src/assets/shaders/electronCloudVertex.glsl?raw";
+import fragmentShader from "@assets/shaders/electronCloudAltFragment.glsl?raw";
+import vertexShader from "@assets/shaders/electronCloudVertex.glsl?raw";
 
 interface VanDerWaalsCloudsProps {
   atoms: MoleculeAtom[];

@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { Box, Combobox, Loader, TextInput, useCombobox } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  CloseIcon,
+  Combobox,
+  Loader,
+  TextInput,
+  useCombobox,
+} from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useSearchCompounds } from "@api";
 import { useDebouncedState } from "@mantine/hooks";
 import { useAtom } from "jotai";
 import { pubChemMoleculeAtom } from "@state";
+import { DEFAULT_MOLECULE_OPTIONS } from "@constants";
 
 export function SeachPubChem() {
   const combobox = useCombobox({
@@ -17,11 +26,15 @@ export function SeachPubChem() {
 
   const { data, isFetching } = useSearchCompounds(search);
 
+  const handleClearClick = () => {
+    setValue("");
+  };
+
   return (
     <Combobox
       onOptionSubmit={(optionValue) => {
         setValue(optionValue);
-        setMoleculeName(optionValue);
+        setMoleculeName({ text: optionValue, by: "name" });
         combobox.closeDropdown();
       }}
       withinPortal={false}
@@ -45,24 +58,37 @@ export function SeachPubChem() {
           }}
           onClick={() => combobox.openDropdown()}
           onFocus={() => {
-            if (data !== undefined) {
-              combobox.openDropdown();
-            }
+            combobox.openDropdown();
           }}
           onBlur={() => combobox.closeDropdown()}
-          rightSection={isFetching ? <Loader size={18} /> : <Box w={18} />}
           leftSection={<IconSearch />}
+          rightSection={
+            isFetching ? (
+              <Loader size={18} />
+            ) : value ? (
+              <ActionIcon onClick={handleClearClick} size="18">
+                <CloseIcon />
+              </ActionIcon>
+            ) : (
+              <Box size={18} />
+            )
+          }
         />
       </Combobox.Target>
 
-      <Combobox.Dropdown hidden={data === undefined}>
+      <Combobox.Dropdown hidden={value.length > 0 && data === undefined}>
         <Combobox.Options>
-          {(data?.dictionary_terms.compound || []).map((item) => (
-            <Combobox.Option value={item} key={item}>
-              {item}
-            </Combobox.Option>
-          ))}
-          {!data && <Combobox.Empty>No results found</Combobox.Empty>}
+          {value
+            ? (data?.dictionary_terms.compound || []).map((item) => (
+                <Combobox.Option value={item} key={item}>
+                  {item}
+                </Combobox.Option>
+              ))
+            : DEFAULT_MOLECULE_OPTIONS.map((item) => (
+                <Combobox.Option value={item} key={item}>
+                  {item}
+                </Combobox.Option>
+              ))}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

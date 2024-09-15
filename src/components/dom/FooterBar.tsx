@@ -1,4 +1,4 @@
-import { Button, Group } from "@mantine/core";
+import { Group } from "@mantine/core";
 import { SeachPubChem } from "./SeachPubChem";
 
 export function FooterBar() {
@@ -7,9 +7,7 @@ export function FooterBar() {
       <div>
         <SeachPubChem />
       </div>
-      <div>
-        <Button>Settings</Button>
-      </div>
+      <div>{/* <Button>Settings</Button> */}</div>
     </Group>
   );
 }
