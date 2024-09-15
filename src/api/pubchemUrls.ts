@@ -7,7 +7,7 @@ import { GetCompundOptions, GetConformerOptions } from "./types";
 export const pubchemBaseUrl = "https://pubchem.ncbi.nlm.nih.gov/rest";
 
 export const compoundAutocompleteUrl = (search: string) =>
-  `${pubchemBaseUrl}/autocomplete/compound/${search}/json`;
+  pubchemBaseUrl + `/autocomplete/compound/${search}/json`;
 
 const defalutGetCompoundOptions: GetCompundOptions = {
   text: "",
@@ -20,9 +20,13 @@ export const compoundByNameOrIdUrl = (options: GetCompundOptions) => {
     ...defalutGetCompoundOptions,
     ...options,
   };
-  return `${pubchemBaseUrl}/pug/compound/${by}/${text}/${
-    operation || ""
-  }/${output}`.replace("//", "/");
+  return (
+    pubchemBaseUrl +
+    `/pug/compound/${by}/${text}/${operation || ""}/${output}`.replace(
+      "//",
+      "/"
+    )
+  );
 };
 
 const defalutGetConformerOptions: GetConformerOptions = {
@@ -34,5 +38,5 @@ export const conformerUrl = (options: GetConformerOptions) => {
     ...defalutGetConformerOptions,
     ...options,
   };
-  return `${pubchemBaseUrl}/pug/conformers/${conformerId}/${output}`;
+  return pubchemBaseUrl + `/pug/conformers/${conformerId}/${output}`;
 };
