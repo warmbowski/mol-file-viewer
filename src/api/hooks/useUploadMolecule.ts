@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { readMolFile } from "../../utils/readMolfile";
+import { readMolFile } from "@utils";
 
 export function useUploadMolecule() {
   const queryClient = useQueryClient();

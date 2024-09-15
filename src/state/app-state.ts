@@ -54,12 +54,16 @@ export const ballRadiusAtom = atomWithLocalStorage<RadiusType>(
 export const moleculeAtom = atomWithLocalStorage("nfv-molecule", "6324", [
   "custom",
 ]);
+// export const pubChemMoleculeAtom = atomWithLocalStorage(
+//   "nfv-pubChemMolecule",
+//   ""
+// );
 
 // Not persisted
-// export const dropElementsAtom = atom(false);
 export const canvasStateAtom = atom<RootState | null>(null);
 export const fileToDownloadAtom = atom<Blob | null>(null);
 export const processingWorkerAtom = atom(0);
+export const pubChemMoleculeAtom = atom("");
 
 // derived
 export const periodicTableAtom = atom((get) => {

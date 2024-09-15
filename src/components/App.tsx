@@ -2,16 +2,22 @@ import { useAtom } from "jotai";
 import { AppShell } from "@mantine/core";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { debugAtom, moleculeAtom } from "@state";
-import { useGetMolecule } from "@api";
+import { debugAtom, moleculeAtom, pubChemMoleculeAtom } from "@state";
 import { FOOTER_HEIGHT, SCALE_FACTOR } from "@constants";
 import { Molecule, Progress } from "./canvas";
 import { Dom, FooterBar } from "./dom";
+import { useGetConformerMolecule } from "@api";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
-  const [molecule] = useAtom(moleculeAtom);
-  const { data, isFetching } = useGetMolecule(molecule);
+  const [moleculeId] = useAtom(moleculeAtom);
+  const [moleculeName] = useAtom(pubChemMoleculeAtom);
+
+  // const { data: molecule, isFetching } = useGetMolecule(moleculeId);
+  const { data: molecule, isFetching } = useGetConformerMolecule(
+    moleculeName || moleculeId,
+    "name"
+  );
 
   return (
     <AppShell footer={{ height: FOOTER_HEIGHT }}>
@@ -30,7 +36,11 @@ export default function App() {
           <ambientLight intensity={Math.PI} />
           <pointLight position={[0, -70, 70]} intensity={5000} />
           <pointLight position={[0, 70, -70]} intensity={5000} />
-          {isFetching ? <Progress /> : data && <Molecule molecule={data} />}
+          {isFetching ? (
+            <Progress />
+          ) : (
+            molecule && <Molecule molecule={molecule} />
+          )}
           <Environment background blur={0.75}>
             <color attach="background" args={[0x333533]} />
           </Environment>

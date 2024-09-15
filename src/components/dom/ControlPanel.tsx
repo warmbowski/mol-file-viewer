@@ -12,8 +12,10 @@ import {
   cloudTypeAtom,
   colorThemeAtom,
   canvasStateAtom,
+  pubChemMoleculeAtom,
 } from "@state";
 import { getDateTimeStamp, exportToSTL, exportGLTF } from "@utils";
+import { MOLECULE_OPTIONS } from "@constants";
 
 export function ControlPanel() {
   const [debug, setDebug] = useAtom(debugAtom);
@@ -23,7 +25,8 @@ export function ControlPanel() {
   const [cloudType, setCloudType] = useAtom(cloudTypeAtom);
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
-  const [molecule, setMolecule] = useAtom(moleculeAtom);
+  const [moleculeId, setMoleculeId] = useAtom(moleculeAtom);
+  const [moleculeName, setMoleculeName] = useAtom(pubChemMoleculeAtom);
   const [canvasState] = useAtom(canvasStateAtom);
 
   const [, setOptions] = useControls(
@@ -74,20 +77,13 @@ export function ControlPanel() {
         onChange: setBallRadius,
       },
       molecule: {
-        value: molecule,
+        value: moleculeId,
         label: "Pick molecule",
-        options: {
-          Ethane: "6324",
-          Ethanol: "682",
-          "Benzoic acid": "238",
-          Caffiene: "2424",
-          Catnip: "141747",
-          Dichlorodiphenyldichloroethylene: "2927",
-          "Silicon Compound": "CT1066647122",
-          "Phosphazene Compound": "CT1083511253",
-          custom: "custom",
+        options: MOLECULE_OPTIONS,
+        onChange: (value) => {
+          setMoleculeId(value);
+          setMoleculeName("");
         },
-        onChange: setMolecule,
       },
       "Upload mol/sdf file": button(
         () => document.getElementById("file-input")?.click(),
@@ -98,7 +94,9 @@ export function ControlPanel() {
       "Export model to stl": button(
         () => {
           if (canvasState) {
-            const filename = `${molecule}-${getDateTimeStamp()}.stl`;
+            const filename = `${
+              moleculeName || moleculeId
+            }-${getDateTimeStamp()}.stl`;
             const stl = exportToSTL(canvasState.scene);
             downloadBlob(stl, filename);
           }
@@ -111,7 +109,9 @@ export function ControlPanel() {
         () => {
           if (canvasState) {
             exportGLTF(canvasState.scene).then((gltfBuffer) => {
-              let filename = `${molecule}-${getDateTimeStamp()}`;
+              let filename = `${
+                moleculeName || moleculeId
+              }-${getDateTimeStamp()}`;
               let blob: Blob;
               if (gltfBuffer instanceof ArrayBuffer) {
                 blob = new Blob([gltfBuffer], {

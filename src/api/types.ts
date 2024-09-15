@@ -11,3 +11,26 @@ export interface AutoCompleteResponse {
     // taxonomy: string[];
   };
 }
+
+export interface ConformerList {
+  InformationList: {
+    Information: [
+      {
+        CID: number;
+        ConformerID: string[];
+      }
+    ];
+  };
+}
+
+export interface GetCompundOptions {
+  text: string;
+  by: "name" | "cid";
+  output?: "json" | "sdf" | "png";
+  operation?: "conformers";
+}
+
+export interface GetConformerOptions {
+  conformerId: string;
+  output?: "json" | "sdf" | "png";
+}
