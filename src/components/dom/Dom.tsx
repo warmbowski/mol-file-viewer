@@ -19,15 +19,17 @@ export function Dom() {
     return new Set(data?.atoms.map((atom) => atom.symbol as PTableSymbol));
   }, [data]);
 
-  return !error ? (
+  return (
     <>
       <ControlPanel />
       {symbols.size > 0 && <ElementCardList symbols={[...symbols]} />}
       <ProcessingToast />
+      {error && (
+        <div className="processing processing-error">
+          <div>{`Problem Loading Mol/SDF file for molecule: ${moleculeName?.text}.`}</div>
+          <div>{`${error.message}`}</div>
+        </div>
+      )}
     </>
-  ) : (
-    <div className="processing processing-error">
-      <div>{`Problem Loading Mol/SDF file for molecule: ${moleculeName?.text}.`}</div>
-    </div>
   );
 }

@@ -23,6 +23,13 @@ export interface ConformerList {
   };
 }
 
+export interface PUGRESTError {
+  Fault: {
+    Code: string; // ex: "PUGREST.NotFound";
+    Message: string; // ex: "No conformers found for the given CID(s)";
+  };
+}
+
 export interface GetCompundOptions {
   text: string;
   by: "name" | "cid";

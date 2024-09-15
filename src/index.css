@@ -24,7 +24,7 @@ a {
 .repo-link,
 .processing {
   position: absolute;
-  bottom: 0;
+  bottom: 48px;
   right: 0;
   padding: 0.5em 1em;
   margin: 1em;

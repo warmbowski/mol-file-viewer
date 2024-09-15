@@ -1,4 +1,4 @@
-import { CompoundNameOrId, ConformerList } from "../types";
+import { CompoundNameOrId, ConformerList, PUGRESTError } from "../types";
 import { compoundByNameOrIdUrl } from "../pubchemUrls";
 
 export async function getConformerList(
@@ -13,5 +13,10 @@ export async function getConformerList(
       operation: "conformers",
     })
   );
+  if (resp.ok === false) {
+    const errorBody = (await resp.json()) as PUGRESTError;
+    console.error(errorBody);
+    throw new Error(errorBody.Fault.Message);
+  }
   return (await resp.json()) as ConformerList;
 }
