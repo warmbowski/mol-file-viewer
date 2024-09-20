@@ -1,21 +1,51 @@
-import { atom } from "jotai";
+import { Atom, atom } from "jotai";
+import { z } from "zod";
+import { RootState } from "@react-three/fiber";
 import { ElementData, PeriodicTable } from "../constants/periodicTable";
 import { ColorTheme } from "../constants/colorThemes.noformat";
-import { RootState } from "@react-three/fiber";
-import { CompoundNameOrId } from "@api";
+import { simpleShallowEqual } from "@utils";
+import { UPLOAD_MOLECULE_PLACEHOLDER } from "@constants";
 
-export type RadiusType = keyof ElementData["radius"];
-export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
+const initSelectedMolecule = (): SelectedMolecule => {
+  try {
+    return (
+      selectedMoleculeSchema.parse(
+        Object.fromEntries(new URLSearchParams(window.location.search))
+      ) || {
+        text: "water",
+        by: "name",
+      }
+    );
+  } catch {
+    return {
+      text: "water",
+      by: "name",
+    };
+  }
+};
 
-const atomWithLocalStorage = <T>(
+const atomWithLocalStorage = <T, V = void>(
   key: string,
   initialValue: T,
+  validationSchema?: V,
   doNotPersistFunction?: (nextValue: T) => boolean
 ) => {
   const getInitialValue = () => {
     const item = localStorage.getItem(key);
     if (item !== null) {
-      return JSON.parse(item) as T;
+      if (validationSchema) {
+        const parsed = JSON.parse(item);
+        try {
+          // validate local storage value
+          return selectedMoleculeSchema.parse(parsed) as T;
+        } catch {
+          // if local storage value is corrupted, remove it
+          localStorage.removeItem(key);
+          return initialValue;
+        }
+      } else {
+        return JSON.parse(item) as T;
+      }
     }
     return initialValue;
   };
@@ -37,6 +67,38 @@ const atomWithLocalStorage = <T>(
   return derivedAtom;
 };
 
+export function atomWithHistory<T>(
+  targetAtom: Atom<T>,
+  limit: number,
+  initialHistory: T[]
+) {
+  const getInitialValue = () => initialHistory || ([] as T[]);
+  const historyAtom = atom(
+    () => getInitialValue(),
+    (get) => () => void (get(historyAtom).length = 0)
+  );
+  historyAtom.onMount = (mount) => mount();
+  historyAtom.debugPrivate = true;
+  return atom((get) => {
+    const ref = get(historyAtom);
+    const filteredRef = ref.filter(
+      (item) => !simpleShallowEqual(item, get(targetAtom))
+    );
+    return [get(targetAtom), ...filteredRef].slice(0, limit);
+  });
+}
+
+// ***** Atoms *****
+export type RadiusType = keyof ElementData["radius"];
+export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
+
+export const selectedMoleculeSchema = z.object({
+  text: z.string(),
+  by: z.union([z.literal("name"), z.literal("cid")]),
+});
+type SelectedMoleculeSchema = typeof selectedMoleculeSchema;
+export type SelectedMolecule = z.infer<SelectedMoleculeSchema>;
+
 // Persisted
 export const debugAtom = atomWithLocalStorage("mfv-debug", false);
 export const noHAtom = atomWithLocalStorage("mfv-noHAtom", false);
@@ -54,15 +116,15 @@ export const ballRadiusAtom = atomWithLocalStorage<RadiusType>(
   "mfv-ballRadius",
   "fixed"
 );
-export const pubChemMoleculeAtom =
-  atomWithLocalStorage<CompoundNameOrId | null>(
-    "mfv-selected-molecule",
-    {
-      text: "water",
-      by: "name",
-    },
-    (nextValue) => nextValue?.text === "custom"
-  );
+export const selectedMoleculeAtom = atomWithLocalStorage<
+  SelectedMolecule,
+  SelectedMoleculeSchema
+>(
+  "mfv-selected-molecule",
+  initSelectedMolecule(),
+  selectedMoleculeSchema,
+  (nextValue) => nextValue?.text === UPLOAD_MOLECULE_PLACEHOLDER
+);
 
 // Not persisted
 export const canvasStateAtom = atom<RootState | null>(null);

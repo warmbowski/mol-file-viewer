@@ -11,9 +11,10 @@ import {
   cloudTypeAtom,
   colorThemeAtom,
   canvasStateAtom,
-  pubChemMoleculeAtom,
+  selectedMoleculeAtom,
 } from "@state";
 import { getDateTimeStamp, exportToSTL, exportGLTF } from "@utils";
+import { UPLOAD_MOLECULE_PLACEHOLDER } from "@constants";
 
 export function ControlPanel() {
   const [debug, setDebug] = useAtom(debugAtom);
@@ -23,7 +24,7 @@ export function ControlPanel() {
   const [cloudType, setCloudType] = useAtom(cloudTypeAtom);
   const [ballRadius, setBallRadius] = useAtom(ballRadiusAtom);
   const [colorTheme, setColorTheme] = useAtom(colorThemeAtom);
-  const [moleculeName, setMoleculeName] = useAtom(pubChemMoleculeAtom);
+  const [selectedMolecule, setSelectedMolecule] = useAtom(selectedMoleculeAtom);
   const [canvasState] = useAtom(canvasStateAtom);
 
   useControls(
@@ -82,7 +83,9 @@ export function ControlPanel() {
       "Export model to stl": button(
         () => {
           if (canvasState) {
-            const filename = `${moleculeName?.text}-${getDateTimeStamp()}.stl`;
+            const filename = `${
+              selectedMolecule?.text
+            }-${getDateTimeStamp()}.stl`;
             const stl = exportToSTL(canvasState.scene);
             downloadBlob(stl, filename);
           }
@@ -95,7 +98,7 @@ export function ControlPanel() {
         () => {
           if (canvasState) {
             exportGLTF(canvasState.scene).then((gltfBuffer) => {
-              let filename = `${moleculeName?.text}-${getDateTimeStamp()}`;
+              let filename = `${selectedMolecule?.text}-${getDateTimeStamp()}`;
               let blob: Blob;
               if (gltfBuffer instanceof ArrayBuffer) {
                 blob = new Blob([gltfBuffer], {
@@ -126,12 +129,12 @@ export function ControlPanel() {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.item(0);
       if (!file) return;
-      setMoleculeName({ text: "custom", by: "name" });
+      setSelectedMolecule({ text: UPLOAD_MOLECULE_PLACEHOLDER, by: "name" });
       await uploadMolFile.mutateAsync(file);
       // reset input for subsequent upload
       e.target.value = "";
     },
-    [setMoleculeName, uploadMolFile]
+    [setSelectedMolecule, uploadMolFile]
   );
 
   return (

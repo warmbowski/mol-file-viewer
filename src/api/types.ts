@@ -41,5 +41,3 @@ export interface GetConformerOptions {
   conformerId: string;
   output?: "json" | "sdf" | "png";
 }
-
-export type CompoundNameOrId = Pick<GetCompundOptions, "text" | "by">;

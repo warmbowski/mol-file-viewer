@@ -7,3 +7,4 @@ export * from "./getDateTimeStamp";
 export * from "./scaleModelData";
 export * from "./readMolfile";
 export * from "./glslLiteral";
+export * from "./shallowCompare";

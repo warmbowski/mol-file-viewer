@@ -2,20 +2,41 @@ import { useAtom } from "jotai";
 import { AppShell } from "@mantine/core";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { debugAtom, pubChemMoleculeAtom } from "@state";
-import { FOOTER_HEIGHT, FOV, INIT_CAMERA_Z } from "@constants";
+import { debugAtom, selectedMoleculeAtom } from "@state";
+import {
+  FOOTER_HEIGHT,
+  FOV,
+  INIT_CAMERA_Z,
+  UPLOAD_MOLECULE_PLACEHOLDER,
+} from "@constants";
 import { Molecule, Progress } from "./canvas";
 import { Dom, FooterBar } from "./dom";
 import { useGetConformerMolecule } from "@api";
+import { useEffect } from "react";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
-  const [moleculeName] = useAtom(pubChemMoleculeAtom);
+  const [selectedMolecule] = useAtom(selectedMoleculeAtom);
 
   const { data: molecule, isFetching } = useGetConformerMolecule(
-    moleculeName?.text || "",
+    selectedMolecule?.text || "",
     "name"
   );
+
+  useEffect(() => {
+    if (
+      selectedMolecule &&
+      selectedMolecule.text !== UPLOAD_MOLECULE_PLACEHOLDER
+    ) {
+      const newUrl = `${window.location.pathname}?${new URLSearchParams(
+        selectedMolecule
+      ).toString()}`;
+      window.history.pushState({}, "", newUrl);
+    } else {
+      const newUrl = `${window.location.pathname}`;
+      window.history.pushState({}, "", newUrl);
+    }
+  }, [selectedMolecule]);
 
   return (
     <AppShell footer={{ height: FOOTER_HEIGHT }}>

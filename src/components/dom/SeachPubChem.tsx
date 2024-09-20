@@ -12,14 +12,26 @@ import { IconSearch } from "@tabler/icons-react";
 import { useSearchCompounds } from "@api";
 import { useDebouncedState } from "@mantine/hooks";
 import { useAtom } from "jotai";
-import { pubChemMoleculeAtom } from "@state";
-import { DEFAULT_MOLECULE_OPTIONS } from "@constants";
+import { SelectedMolecule, selectedMoleculeAtom } from "@state";
+
+const initialCompoundHistory: SelectedMolecule[] = [
+  { text: "water", by: "name" },
+  { text: "ethane", by: "name" },
+  { text: "ethanol", by: "name" },
+  { text: "benzoic acid", by: "name" },
+  { text: "caffeine", by: "name" },
+  { text: "nepetalactone", by: "name" },
+  { text: "dichlorodiphenyldichloroethylene", by: "name" },
+  { text: "cyclotriphosphazene", by: "name" },
+  { text: "cyclotetraphosphazene", by: "name" },
+];
 
 export function SeachPubChem() {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
-  const [, setMoleculeName] = useAtom(pubChemMoleculeAtom);
+  const [, setSelectedMolecule] = useAtom(selectedMoleculeAtom);
+  // const [history] = useAtom(moleculeHistoryAtom);
 
   const [value, setValue] = useState("");
   const [search, setSearch] = useDebouncedState(value, 500);
@@ -34,7 +46,7 @@ export function SeachPubChem() {
     <Combobox
       onOptionSubmit={(optionValue) => {
         setValue(optionValue);
-        setMoleculeName({ text: optionValue, by: "name" });
+        setSelectedMolecule({ text: optionValue, by: "name" });
         combobox.closeDropdown();
       }}
       withinPortal={false}
@@ -84,9 +96,9 @@ export function SeachPubChem() {
                   {item}
                 </Combobox.Option>
               ))
-            : DEFAULT_MOLECULE_OPTIONS.map((item) => (
-                <Combobox.Option value={item} key={item}>
-                  {item}
+            : initialCompoundHistory.map((item) => (
+                <Combobox.Option value={item.text} key={item.text}>
+                  {item.text}
                 </Combobox.Option>
               ))}
         </Combobox.Options>

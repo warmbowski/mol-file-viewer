@@ -36,7 +36,6 @@ export const exportGLTF = (scene: Object3D) => {
 const filterOutClouds = (scene: Object3D) => {
   scene.traverse((child) => {
     if (child.name.startsWith("cloud")) {
-      console.log(child.name);
       const parent = child.parent;
       parent?.remove(child);
     }
