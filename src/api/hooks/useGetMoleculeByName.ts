@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMoleculeByName } from "../async/getMoleculeByName";
-import { CompoundNameOrId } from "../types";
+import { SelectedMolecule } from "@state";
 
 export function useGetMoleculeByName(
-  text: CompoundNameOrId["text"],
-  by: CompoundNameOrId["by"]
+  text: SelectedMolecule["text"],
+  by: SelectedMolecule["by"]
 ) {
   return useQuery({
     queryKey: ["molecule", by, text],

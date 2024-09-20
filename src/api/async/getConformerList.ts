@@ -1,9 +1,10 @@
-import { CompoundNameOrId, ConformerList, PUGRESTError } from "../types";
+import { ConformerList, PUGRESTError } from "../types";
 import { compoundByNameOrIdUrl } from "../pubchemUrls";
+import { SelectedMolecule } from "@state";
 
 export async function getConformerList(
-  text: CompoundNameOrId["text"],
-  by: CompoundNameOrId["by"]
+  text: SelectedMolecule["text"],
+  by: SelectedMolecule["by"]
 ) {
   const resp = await fetch(
     compoundByNameOrIdUrl({

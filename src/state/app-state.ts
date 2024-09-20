@@ -1,28 +1,14 @@
 import { Atom, atom } from "jotai";
-import { z } from "zod";
 import { RootState } from "@react-three/fiber";
 import { ElementData, PeriodicTable } from "../constants/periodicTable";
 import { ColorTheme } from "../constants/colorThemes.noformat";
 import { simpleShallowEqual } from "@utils";
 import { UPLOAD_MOLECULE_PLACEHOLDER } from "@constants";
-
-const initSelectedMolecule = (): SelectedMolecule => {
-  try {
-    return (
-      selectedMoleculeSchema.parse(
-        Object.fromEntries(new URLSearchParams(window.location.search))
-      ) || {
-        text: "water",
-        by: "name",
-      }
-    );
-  } catch {
-    return {
-      text: "water",
-      by: "name",
-    };
-  }
-};
+import {
+  SelectedMolecule,
+  SelectedMoleculeSchema,
+  selectedMoleculeSchema,
+} from "./validations";
 
 const atomWithLocalStorage = <T, V = void>(
   key: string,
@@ -92,13 +78,6 @@ export function atomWithHistory<T>(
 export type RadiusType = keyof ElementData["radius"];
 export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
 
-export const selectedMoleculeSchema = z.object({
-  text: z.string(),
-  by: z.union([z.literal("name"), z.literal("cid")]),
-});
-type SelectedMoleculeSchema = typeof selectedMoleculeSchema;
-export type SelectedMolecule = z.infer<SelectedMoleculeSchema>;
-
 // Persisted
 export const debugAtom = atomWithLocalStorage("mfv-debug", false);
 export const noHAtom = atomWithLocalStorage("mfv-noHAtom", false);
@@ -121,7 +100,10 @@ export const selectedMoleculeAtom = atomWithLocalStorage<
   SelectedMoleculeSchema
 >(
   "mfv-selected-molecule",
-  initSelectedMolecule(),
+  {
+    text: "water",
+    by: "name",
+  },
   selectedMoleculeSchema,
   (nextValue) => nextValue?.text === UPLOAD_MOLECULE_PLACEHOLDER
 );

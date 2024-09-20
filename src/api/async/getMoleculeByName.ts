@@ -1,10 +1,10 @@
 import { readMolFile } from "@utils";
 import { compoundByNameOrIdUrl } from "../pubchemUrls";
-import { CompoundNameOrId } from "../types";
+import { SelectedMolecule } from "@state";
 
 export async function getMoleculeByName(
-  text: CompoundNameOrId["text"],
-  by: CompoundNameOrId["by"]
+  text: SelectedMolecule["text"],
+  by: SelectedMolecule["by"]
 ) {
   const resp = await fetch(
     compoundByNameOrIdUrl({

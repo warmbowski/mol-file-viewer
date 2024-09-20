@@ -2,7 +2,12 @@ import { useAtom } from "jotai";
 import { AppShell } from "@mantine/core";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { debugAtom, selectedMoleculeAtom } from "@state";
+import {
+  debugAtom,
+  SelectedMolecule,
+  selectedMoleculeAtom,
+  selectedMoleculeSchema,
+} from "@state";
 import {
   FOOTER_HEIGHT,
   FOV,
@@ -16,7 +21,7 @@ import { useEffect } from "react";
 
 export default function App() {
   const [debug] = useAtom(debugAtom);
-  const [selectedMolecule] = useAtom(selectedMoleculeAtom);
+  const [selectedMolecule, setSelectedMolecule] = useAtom(selectedMoleculeAtom);
 
   const { data: molecule, isFetching } = useGetConformerMolecule(
     selectedMolecule?.text || "",
@@ -37,6 +42,14 @@ export default function App() {
       window.history.pushState({}, "", newUrl);
     }
   }, [selectedMolecule]);
+
+  useEffect(() => {
+    const initialMolecule = initSelectedMolecule();
+    console.log(initialMolecule);
+    if (initialMolecule) {
+      setSelectedMolecule(initialMolecule);
+    }
+  }, [setSelectedMolecule]);
 
   return (
     <AppShell footer={{ height: FOOTER_HEIGHT }}>
@@ -72,3 +85,15 @@ export default function App() {
     </AppShell>
   );
 }
+
+const initSelectedMolecule = (): SelectedMolecule | null => {
+  try {
+    return (
+      selectedMoleculeSchema.parse(
+        Object.fromEntries(new URLSearchParams(window.location.search))
+      ) || null
+    );
+  } catch {
+    return null;
+  }
+};
