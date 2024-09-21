@@ -12,26 +12,14 @@ import { IconSearch } from "@tabler/icons-react";
 import { useSearchCompounds } from "@api";
 import { useDebouncedState } from "@mantine/hooks";
 import { useAtom } from "jotai";
-import { SelectedMolecule, selectedMoleculeAtom } from "@state";
-
-const initialCompoundHistory: SelectedMolecule[] = [
-  { text: "water", by: "name" },
-  { text: "ethane", by: "name" },
-  { text: "ethanol", by: "name" },
-  { text: "benzoic acid", by: "name" },
-  { text: "caffeine", by: "name" },
-  { text: "nepetalactone", by: "name" },
-  { text: "dichlorodiphenyldichloroethylene", by: "name" },
-  { text: "cyclotriphosphazene", by: "name" },
-  { text: "cyclotetraphosphazene", by: "name" },
-];
+import { selectedMoleculeAtom, selectedHistoryAtom } from "@state";
 
 export function SeachPubChem() {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
   const [, setSelectedMolecule] = useAtom(selectedMoleculeAtom);
-  // const [history] = useAtom(moleculeHistoryAtom);
+  const [history, updateHistory] = useAtom(selectedHistoryAtom);
 
   const [value, setValue] = useState("");
   const [search, setSearch] = useDebouncedState(value, 500);
@@ -42,11 +30,14 @@ export function SeachPubChem() {
     setValue("");
   };
 
+  // console.log(history);
+
   return (
     <Combobox
       onOptionSubmit={(optionValue) => {
         setValue(optionValue);
         setSelectedMolecule({ text: optionValue, by: "name" });
+        updateHistory({ text: optionValue, by: "name" });
         combobox.closeDropdown();
       }}
       withinPortal={false}
@@ -90,17 +81,23 @@ export function SeachPubChem() {
 
       <Combobox.Dropdown hidden={value.length > 0 && data === undefined}>
         <Combobox.Options>
-          {value
-            ? (data?.dictionary_terms.compound || []).map((item) => (
+          {value ? (
+            <Combobox.Group label="Search Results">
+              {(data?.dictionary_terms.compound || []).map((item) => (
                 <Combobox.Option value={item} key={item}>
                   {item}
                 </Combobox.Option>
-              ))
-            : initialCompoundHistory.map((item) => (
+              ))}
+            </Combobox.Group>
+          ) : (
+            <Combobox.Group label="History">
+              {history.map((item) => (
                 <Combobox.Option value={item.text} key={item.text}>
                   {item.text}
                 </Combobox.Option>
               ))}
+            </Combobox.Group>
+          )}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

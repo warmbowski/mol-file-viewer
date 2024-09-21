@@ -1,3 +1,5 @@
+import { SelectedMolecule } from "@state";
+
 export const SCALE_FACTOR = 10;
 export const FOV = 25;
 export const INIT_CAMERA_Z = 13 * SCALE_FACTOR;
@@ -9,6 +11,18 @@ export const DEFAULT_CLOUD_COLOR = 0x4d99ff;
 export const HEADER_HEIGHT = 48;
 export const FOOTER_HEIGHT = 48;
 export const UPLOAD_MOLECULE_PLACEHOLDER = "custom";
+
+export const INITIAL_HISTORY: SelectedMolecule[] = [
+  { text: "water", by: "name" },
+  { text: "ethane", by: "name" },
+  { text: "ethanol", by: "name" },
+  { text: "benzoic acid", by: "name" },
+  { text: "caffeine", by: "name" },
+  { text: "nepetalactone", by: "name" },
+  { text: "dichlorodiphenyldichloroethylene", by: "name" },
+  { text: "cyclotriphosphazene", by: "name" },
+  { text: "cyclotetraphosphazene", by: "name" },
+];
 
 // remove this object and just use the array of keys once
 // the mol files are deleted from the public folder

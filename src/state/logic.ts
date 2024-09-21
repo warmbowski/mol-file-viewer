@@ -29,18 +29,18 @@ export const atomWithLocalStorage = <T, V = void>(
 
     const item = localStorage.getItem(key);
     if (item !== null) {
-      if (validationSchema) {
-        const parsed = JSON.parse(item);
-        try {
+      try {
+        if (validationSchema) {
+          const parsed = JSON.parse(item);
           // validate local storage value
           return selectedMoleculeSchema.parse(parsed) as T;
-        } catch {
-          // if local storage value is corrupted, remove it
-          localStorage.removeItem(key);
-          return fallbackValue;
+        } else {
+          return JSON.parse(item) as T;
         }
-      } else {
-        return JSON.parse(item) as T;
+      } catch {
+        // if local storage value is corrupted, remove it
+        localStorage.removeItem(key);
+        return fallbackValue;
       }
     }
     return fallbackValue;
@@ -62,24 +62,3 @@ export const atomWithLocalStorage = <T, V = void>(
   );
   return derivedAtom;
 };
-
-// export function atomWithHistory<T>(
-//   targetAtom: Atom<T>,
-//   limit: number,
-//   initialHistory: T[]
-// ) {
-//   const getInitialValue = () => initialHistory || ([] as T[]);
-//   const historyAtom = atom(
-//     () => getInitialValue(),
-//     (get) => () => void (get(historyAtom).length = 0)
-//   );
-//   historyAtom.onMount = (mount) => mount();
-//   historyAtom.debugPrivate = true;
-//   return atom((get) => {
-//     const ref = get(historyAtom);
-//     const filteredRef = ref.filter(
-//       (item) => !simpleShallowEqual(item, get(targetAtom))
-//     );
-//     return [get(targetAtom), ...filteredRef].slice(0, limit);
-//   });
-// }
