@@ -10,10 +10,11 @@ const orderedPeriodicTableArray = JSON.parse(pTable) as PTableParsed;
 
 export interface ElementData {
   symbol: PTableSymbol;
-  color: string;
   name: string;
   atomic_number: number;
   atomic_mass: number;
+  color: string;
+  electronegativity: number;
   radius: {
     fixed: number;
     calculated: number;
@@ -40,6 +41,7 @@ export class PeriodicTable {
             color:
               colorThemes[el.symbol][colorTheme] ||
               `#${el.cpk_hex || "ffffff"}`,
+            electronegativity: el.electronegativity_pauling,
             radius: {
               fixed:
                 (el.symbol === "H" ? FIXED_RADIUS_H_PM : FIXED_RADIUS_PM) / 100,

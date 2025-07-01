@@ -59,6 +59,8 @@ export function ControlPanel() {
           Atomic: "atomic",
           "Van der Waals": "vanderwaals",
           Shrinkwrap: "shrinkwrap",
+          // SDF: "sdf",
+          MEP: "mep",
         },
         onChange: setCloudType,
       },

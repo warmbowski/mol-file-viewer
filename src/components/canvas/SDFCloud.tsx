@@ -7,21 +7,21 @@ import { DEFAULT_CLOUD_COLOR } from "@constants";
 import { MoleculeAtom, scalePosition, scaleRadius } from "@utils";
 import { periodicTableAtom } from "@state";
 
-import fragmentShader from "@assets/shaders/electronCloudAltFragment.glsl?raw";
-import vertexShader from "@assets/shaders/electronCloudVertex.glsl?raw";
+import fragmentShader from "@assets/shaders/sdfCloudFragment.glsl?raw";
+import vertexShader from "@assets/shaders/sdfCloudVertex.glsl?raw";
 
-interface VanDerWaalsCloudsProps {
+interface SDFCloudsProps {
   atoms: MoleculeAtom[];
 }
 
-export function ShrinkWrapCloud({ atoms }: VanDerWaalsCloudsProps) {
+export function SDFCloud({ atoms }: SDFCloudsProps) {
   const [periodicTable] = useAtom(periodicTableAtom);
 
   const cloud = useMemo(() => {
     const sphereGeoms = atoms.map((atom) => {
       const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
       const radius = scaleRadius(elementData?.radius.vanderwaals);
-      const geom = new SphereGeometry(radius, 200, 200);
+      const geom = new SphereGeometry(radius, 20, 20);
       const position = scalePosition(atom.x, atom.y, atom.z);
       geom.translate(position.x, position.y, position.z);
       return geom;
@@ -46,7 +46,7 @@ export function ShrinkWrapCloud({ atoms }: VanDerWaalsCloudsProps) {
       depthWrite: true,
     });
 
-    const mesh = new Mesh(convexGeometry, cloudMaterial);
+    const mesh = new Mesh(cloudGeometry, cloudMaterial);
     mesh.scale.set(1.01, 1.01, 1.01);
     return mesh;
   }, [atoms, periodicTable]);

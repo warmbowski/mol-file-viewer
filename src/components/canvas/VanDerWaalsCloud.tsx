@@ -61,8 +61,8 @@ export function VanDerWaalsClouds({ atoms, cacheKey }: VanDerWaalsCloudsProps) {
 
         const geometry = new SphereGeometry(
           scaleRadius(elementData?.radius.vanderwaals),
-          24,
-          24
+          75,
+          75
         );
         const position = scalePosition(atom.x, atom.y, atom.z);
         geometry.translate(position.x, position.y, position.z);

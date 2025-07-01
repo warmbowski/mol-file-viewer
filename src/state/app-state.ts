@@ -12,7 +12,13 @@ import { atomWithLocalStorage, getMoleculeFromUrlSearchParams } from "./logic";
 import { simpleShallowEqual } from "@utils";
 
 export type RadiusType = keyof ElementData["radius"];
-export type CloudType = "none" | "atomic" | "vanderwaals" | "shrinkwrap";
+export type CloudType =
+  | "none"
+  | "atomic"
+  | "vanderwaals"
+  | "shrinkwrap"
+  | "sdf"
+  | "mep";
 
 // Persisted
 export const debugAtom = atomWithLocalStorage("mfv-debug", false);

@@ -15,6 +15,8 @@ import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import { ShrinkWrapCloud } from "./ShrinkwrapCloud";
 import { FOV, SCALE_FACTOR } from "@constants";
+import { SDFCloud } from "./SDFCloud";
+import { MEPCloud } from "./Mep";
 
 export function Molecule({
   molecule,
@@ -54,6 +56,8 @@ export function Molecule({
           <VanDerWaalsClouds atoms={atoms} cacheKey={base64} />
         )}
         {cloudType === "shrinkwrap" && <ShrinkWrapCloud atoms={atoms} />}
+        {cloudType === "sdf" && <SDFCloud atoms={atoms} />}
+        {cloudType === "mep" && <MEPCloud atoms={atoms} />}
       </group>
     )
   );
