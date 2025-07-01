@@ -31,7 +31,7 @@ export function MEPCloud({ atoms }: MepCloudProps) {
   // For geometry
   const sphereGeoms = atoms.map((atom) => {
     const elementData = periodicTable.getElementDataBySymbol(atom.symbol);
-    const radius = scaleRadius(elementData?.radius.covalent);
+    const radius = scaleRadius(elementData?.radius.vanderwaals);
     const geom = new SphereGeometry(radius, 75, 75);
     const position = scalePosition(atom.x, atom.y, atom.z);
     geom.translate(position.x, position.y, position.z);
