@@ -10,11 +10,11 @@ import { periodicTableAtom } from "@state";
 import fragmentShader from "@assets/shaders/electronCloudAltFragment.glsl?raw";
 import vertexShader from "@assets/shaders/electronCloudVertex.glsl?raw";
 
-interface VanDerWaalsCloudsProps {
+interface ShrinkWrapCloudProps {
   atoms: MoleculeAtom[];
 }
 
-export function ShrinkWrapCloud({ atoms }: VanDerWaalsCloudsProps) {
+export function ShrinkWrapCloud({ atoms }: ShrinkWrapCloudProps) {
   const [periodicTable] = useAtom(periodicTableAtom);
 
   const cloud = useMemo(() => {
