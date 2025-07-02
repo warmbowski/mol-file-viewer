@@ -4,44 +4,54 @@ import { findContrastColor } from "color-contrast-finder";
 import { useMemo, useState } from "react";
 import { ElementData } from "@constants";
 import { PTableSymbol } from "periodic-table-data-complete";
-import { Button, Drawer, UnstyledButton } from "@mantine/core";
+import { Indicator, Button, Drawer, UnstyledButton } from "@mantine/core";
 
 function ElementCard({
   elementData,
+  elementCount,
   onClick,
 }: {
   elementData: ElementData;
+  elementCount: number | undefined;
   onClick: (elSymbol: PTableSymbol) => void;
 }) {
   return (
-    <UnstyledButton
-      className={`element ${elementData?.symbol}`}
-      style={{
-        backgroundColor: elementData?.color || "#ffffff",
-        color: findContrastColor({
-          color: elementData?.color || "#ffffff",
-        }),
-      }}
-      size={"xs"}
-      title={`${elementData?.name} (${elementData?.symbol})`}
-      onClick={() => onClick(elementData?.symbol)}
+    <Indicator
+      size="sm"
+      color="dark"
+      label={`${elementCount ?? ""}`}
+      position="top-start"
+      offset={5}
     >
-      <div>{elementData?.atomic_number}</div>
-      <div className="symbol">{elementData?.symbol}</div>
-      <div>
-        {elementData?.name}
-        <br />
-        {Math.round(elementData?.atomic_mass * 1000) / 1000}
-      </div>
-    </UnstyledButton>
+      <UnstyledButton
+        className={`element ${elementData?.symbol}`}
+        style={{
+          backgroundColor: elementData?.color || "#ffffff",
+          color: findContrastColor({
+            color: elementData?.color || "#ffffff",
+          }),
+        }}
+        size={"xs"}
+        title={`${elementData?.name} (${elementData?.symbol})`}
+        onClick={() => onClick(elementData?.symbol)}
+      >
+        <div>{elementData?.atomic_number}</div>
+        <div className="symbol">{elementData?.symbol}</div>
+        <div>
+          {elementData?.name}
+          <br />
+          {Math.round(elementData?.atomic_mass * 1000) / 1000}
+        </div>
+      </UnstyledButton>
+    </Indicator>
   );
 }
 
 export function ElementCardList({
-  symbols,
+  symbolCounts,
   rawData,
 }: {
-  symbols: PTableSymbol[];
+  symbolCounts: Map<PTableSymbol, number>;
   rawData: string;
 }) {
   const [periodicTable] = useAtom(periodicTableAtom);
@@ -50,11 +60,10 @@ export function ElementCardList({
     null
   );
   const elementList = useMemo(() => {
-    return symbols.map(
-      // need to assert not undefined because we know the symbol is in the list
+    return Array.from(symbolCounts.keys()).map(
       (symbol) => periodicTable.getElementDataBySymbol(symbol)!
     );
-  }, [periodicTable, symbols]);
+  }, [periodicTable, symbolCounts]);
 
   return (
     <>
@@ -62,12 +71,13 @@ export function ElementCardList({
         <Button
           variant="light"
           size="compact-xs"
+          fullWidth
           key="raw-data"
           onClick={() => setShowRawData(true)}
         >
           Raw Data
         </Button>
-        {elementList
+        {[...elementList]
           .sort((a, b) => {
             if (a.atomic_number === 6) return -1;
             if (b.atomic_number === 6) return 1;
@@ -78,6 +88,7 @@ export function ElementCardList({
               onClick={(symbol) => setShowElementData(symbol)}
               key={elem?.symbol}
               elementData={elem}
+              elementCount={symbolCounts.get(elem.symbol)}
             />
           ))}
       </div>

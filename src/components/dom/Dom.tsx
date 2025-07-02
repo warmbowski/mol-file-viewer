@@ -15,16 +15,20 @@ export function Dom() {
     "name"
   );
 
-  const symbols = useMemo(() => {
-    return new Set(molecule?.atoms.map((atom) => atom.symbol as PTableSymbol));
+  const symbolCounts = useMemo(() => {
+    if (!molecule || !molecule.atoms) return new Map<PTableSymbol, number>();
+    return molecule.atoms.reduce((acc, atom) => {
+      acc.set(atom.symbol, (acc.get(atom.symbol) || 0) + 1);
+      return acc;
+    }, new Map<PTableSymbol, number>());
   }, [molecule]);
 
   return (
     <>
       <ControlPanel />
-      {symbols.size > 0 && (
+      {symbolCounts.size > 0 && (
         <ElementCardList
-          symbols={[...symbols]}
+          symbolCounts={symbolCounts}
           rawData={molecule?.molFileText || ""}
         />
       )}
