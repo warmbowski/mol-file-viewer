@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./components/App";
 
 import "./index.css";
-import "@mantine/core/styles.css";
+import "@mantine/core/styles.layer.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -61,6 +61,10 @@ export class PeriodicTable {
     return this.periodicTableByAtomicSymbolMap.get(symbol);
   }
 
+  public getAllElementDataBySymbol(symbol: PTableSymbol) {
+    return orderedPeriodicTableArray.find((el) => el.symbol === symbol);
+  }
+
   public setColorTheme(colorTheme: ColorTheme) {
     this.theme = colorTheme;
   }
