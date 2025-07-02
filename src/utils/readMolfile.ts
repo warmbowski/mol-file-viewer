@@ -6,8 +6,10 @@ export interface MoleculeObject {
   extents: MoleculeExtents;
   atoms: MoleculeAtom[];
   bonds: MoleculeBond[];
+  atomPartialCharges: number[];
   properties: string;
   base64: string;
+  molFileText: string;
 }
 
 export function readMolFile(molFile: string): MoleculeObject {
@@ -24,6 +26,13 @@ export function readMolFile(molFile: string): MoleculeObject {
 
   // parse out bonds block
   const bonds = parseMoleculeBonds(lines, counts.atoms + 4, counts.bonds);
+
+  // parse out MMFF94 partial charges if available
+  const atomPartialCharges = parseMMFF94PartialCharges(
+    lines,
+    counts.atoms + counts.bonds + 4,
+    counts.atoms
+  );
 
   // calculate extents
   const extents = cacluateMoleculeExtents(atoms);
@@ -45,9 +54,11 @@ export function readMolFile(molFile: string): MoleculeObject {
     counts,
     atoms,
     bonds,
+    atomPartialCharges,
     extents,
     properties,
     base64: btoa(molFile),
+    molFileText: molFile,
   };
 
   return molecule;
@@ -171,6 +182,38 @@ function parseMoleculeProperties(fileLines: string[], startLineIndex: number) {
     properties.push(fileLines[i]);
   }
   return properties.join("\n");
+}
+
+export function parseMMFF94PartialCharges(
+  fileLines: string[],
+  startLineIndex: number,
+  lineCount: number
+) {
+  // temporary implementation until we have a better understanding of
+  // how to apply partial charges to the molecule data
+  const headLineIndex = fileLines.findIndex((line) =>
+    line.includes("PUBCHEM_MMFF94_PARTIAL_CHARGES")
+  );
+  if (headLineIndex === -1 || headLineIndex < startLineIndex) return [];
+  const count = Number(fileLines[headLineIndex + 1].trim());
+
+  const chargesArray: number[] = new Array(lineCount).fill(0);
+  if (count > lineCount) {
+    return chargesArray;
+  }
+
+  try {
+    for (let i = headLineIndex + 2; i < headLineIndex + 2 + count; i++) {
+      const chargeString = fileLines[i].split(" ");
+      const id = Number(chargeString[0].trim());
+      const value = Number(chargeString[1].trim());
+      chargesArray[id - 1] = value;
+    }
+  } catch (error) {
+    console.error(`Error parsing MMFF94 partial charges:`, error);
+    return chargesArray;
+  }
+  return chargesArray;
 }
 
 export interface MoleculeExtents {

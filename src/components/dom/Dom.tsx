@@ -10,19 +10,24 @@ import { ProcessingToast } from "./ProcessingToast";
 export function Dom() {
   const [selectedMolecule] = useAtom(selectedMoleculeAtom);
 
-  const { data, error } = useGetConformerMolecule(
+  const { data: molecule, error } = useGetConformerMolecule(
     selectedMolecule?.text || "",
     "name"
   );
 
   const symbols = useMemo(() => {
-    return new Set(data?.atoms.map((atom) => atom.symbol as PTableSymbol));
-  }, [data]);
+    return new Set(molecule?.atoms.map((atom) => atom.symbol as PTableSymbol));
+  }, [molecule]);
 
   return (
     <>
       <ControlPanel />
-      {symbols.size > 0 && <ElementCardList symbols={[...symbols]} />}
+      {symbols.size > 0 && (
+        <ElementCardList
+          symbols={[...symbols]}
+          rawData={molecule?.molFileText || ""}
+        />
+      )}
       <ProcessingToast />
       {error && (
         <div className="processing processing-error">

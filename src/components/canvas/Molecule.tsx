@@ -10,7 +10,7 @@ import { BallElements } from "./BallElements";
 import { AtomicClouds } from "./AtomicClouds";
 import { VanDerWaalsClouds } from "./VanDerWaalsCloud";
 import { MoleculeObject } from "@utils";
-import { Scene } from "three";
+import { Scene, Vector3 } from "three";
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import { ShrinkWrapCloud } from "./ShrinkwrapCloud";
@@ -24,7 +24,7 @@ export function Molecule({
   molecule: MoleculeObject;
   onExport?: (scene: Scene) => void;
 }) {
-  const { atoms, bonds, base64 } = molecule;
+  const { atoms, bonds, atomPartialCharges, base64 } = molecule;
   const [hideBalls] = useAtom(hideBallsAtom);
   const [hideSticks] = useAtom(hideSticksAtom);
   const [cloudType] = useAtom(cloudTypeAtom);
@@ -57,7 +57,19 @@ export function Molecule({
         )}
         {cloudType === "shrinkwrap" && <ShrinkWrapCloud atoms={atoms} />}
         {cloudType === "sdf" && <SDFCloud atoms={atoms} />}
-        {cloudType === "mep" && <MEPCloud atoms={atoms} />}
+        {cloudType === "mep" && (
+          <MEPCloud
+            atoms={atoms}
+            atomPartialCharges={atomPartialCharges}
+            moleculeCenter={
+              new Vector3(
+                molecule.extents.mid.x,
+                molecule.extents.mid.y,
+                molecule.extents.mid.z
+              )
+            }
+          />
+        )}
       </group>
     )
   );

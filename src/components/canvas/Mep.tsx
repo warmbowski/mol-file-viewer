@@ -17,9 +17,16 @@ import { MoleculeAtom, scalePosition, scaleRadius } from "@utils";
 
 interface MepCloudProps {
   atoms: MoleculeAtom[];
+  atomPartialCharges: number[];
+  moleculeCenter?: Vector3;
+  chargeScale?: number;
 }
 
-export function MEPCloud({ atoms }: MepCloudProps) {
+export function MEPCloud({
+  atoms,
+  atomPartialCharges,
+  moleculeCenter,
+}: MepCloudProps) {
   const [periodicTable] = useAtom(periodicTableAtom);
 
   // Prepare arrays for atom data
@@ -46,49 +53,22 @@ export function MEPCloud({ atoms }: MepCloudProps) {
   }
   const convexGeometry = new ConvexGeometry(points);
 
-  atoms.forEach((atom) => {
+  atoms.forEach((atom, index) => {
     const { symbol, x, y, z } = atom;
     const elementData = periodicTable.getElementDataBySymbol(symbol);
     if (!elementData) return;
     const pos = scalePosition(x, y, z);
     atomPositions.push(pos.x, pos.y, pos.z);
-    // Simple charge assignment for demonstration
-    let charge = 0;
-    switch (symbol) {
-      case "H":
-        charge = 1;
-        break;
-      case "O":
-        charge = -2;
-        break;
-      case "N":
-        charge = -3;
-        break;
-      case "F":
-      case "Cl":
-      case "Br":
-      case "I":
-        charge = -1;
-        break;
-      case "Na":
-      case "K":
-      case "Li":
-        charge = 1;
-        break;
-      case "C":
-        charge = 0;
-        break;
-      default:
-        charge = 0;
-        break;
-    }
-    atomCharges.push(charge);
+
+    const partialCharge = atomPartialCharges[index] || 0;
+    atomCharges.push(partialCharge);
     atomRadii.push(scaleRadius(elementData.radius.covalent));
     atomElectronegativities.push(elementData.electronegativity);
   });
 
   return (
     <MEP
+      moleculeCenter={moleculeCenter}
       atomPositions={atomPositions}
       atomCharges={atomCharges}
       atomRadii={atomRadii}
@@ -100,6 +80,7 @@ export function MEPCloud({ atoms }: MepCloudProps) {
 }
 
 interface MEPProps {
+  moleculeCenter?: Vector3;
   atomPositions: number[];
   atomCharges: number[];
   atomRadii: number[];
@@ -109,6 +90,7 @@ interface MEPProps {
 }
 
 export function MEP({
+  moleculeCenter = new Vector3(0, 0, 0),
   atomPositions,
   atomCharges,
   atomRadii,
@@ -122,13 +104,19 @@ export function MEP({
     const material = new ShaderMaterial({
       wireframe: debug,
       uniforms: {
-        moleculeCenter: { value: new Vector3(0, 0, 0) },
+        moleculeCenter: {
+          value: scalePosition(
+            moleculeCenter.x,
+            moleculeCenter.y,
+            moleculeCenter.z
+          ),
+        },
         atomPositions: { value: atomPositions },
         atomCharges: { value: atomCharges },
         atomRadii: { value: atomRadii },
         atomElectronegativities: { value: atomElectronegativities },
         atomCount: { value: atomCount },
-        potentialScale: { value: 10.0 },
+        potentialScale: { value: 50.0 },
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
@@ -137,10 +125,13 @@ export function MEP({
       depthWrite: true,
     });
     const mesh = new Mesh(geometry, material);
-    mesh.position.set(0, 0, 0);
+    mesh.position.set(moleculeCenter.x, moleculeCenter.y, moleculeCenter.z);
     return mesh;
   }, [
     debug,
+    moleculeCenter.x,
+    moleculeCenter.y,
+    moleculeCenter.z,
     atomPositions,
     atomCharges,
     atomRadii,

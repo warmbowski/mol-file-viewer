@@ -16,21 +16,23 @@ uniform float atomRadii[MAX_ATOMS];
 float computeElectrostaticPotential(vec3 point, vec3 atomPos, float charge, float radius) {
   float dist = length(point - atomPos);
   if (dist < radius) {
-    return charge / radius * potentialScale;
+    // Use the sign of the charge for inside and outside
+    return -sign(charge) * abs(charge) / radius * potentialScale;
   } else {
-    return charge / dist * potentialScale;
+    return sign(charge) * abs(charge) / dist * potentialScale;
   }
 }
 
-vec3 colorFromPotential(float potential) {
-  float normPot = clamp(potential * 0.5 + 0.5, 0.0, 1.0); // Map -1..1 to 0..1
-  if (potential > 0.0) {
-    return mix(vec3(1.0, 1.0, 1.0), vec3(0.0, 0.0, 1.0), normPot); // white to blue
-  } else if (potential < 0.0) {
-    return mix(vec3(1.0, 1.0, 1.0), vec3(1.0, 0.0, 0.0), 1.0 - normPot); // white to red
-  } else {
-    return vec3(1.0, 1.0, 1.0); // Neutral: white
-  }
+vec4 colorFromPotential(float potential) {
+  // Clamp the potential to a reasonable range for visualization
+  float normPot = clamp(potential, -1.0, 1.0);
+  vec3 blue = vec3(0.0, 0.0, 1.0);
+  vec3 red = vec3(1.0, 0.0, 0.0);
+  // Instead of white, use transparent (alpha=0) for neutral
+  float neutralBlend = smoothstep(0.0, 0.2, abs(normPot));
+  vec3 color = mix(red, blue, normPot * 0.5 + 0.5); // red to blue
+  float alpha = neutralBlend;
+  return vec4(color, alpha);
 }
 
 void main() {
@@ -48,7 +50,7 @@ void main() {
     totalPotential += computeElectrostaticPotential(point, atomPos, charge, radius);
   }
 
-  vec3 finalColor = colorFromPotential(totalPotential);
-  float intensity = pow(1.25 - dot(normalize(vertexNormal), vec3(0.0, 0.0, 1.0)), 1.25);
-  gl_FragColor = vec4(finalColor, 1.0) * intensity;
+  vec4 finalColor = colorFromPotential(totalPotential);
+  float intensity = pow(1.5 - dot(normalize(vertexNormal), vec3(0.0, 0.0, 1.0)), 1.25);
+  gl_FragColor = vec4(finalColor.rgb, finalColor.a) * intensity;
 }

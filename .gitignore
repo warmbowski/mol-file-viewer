@@ -25,3 +25,6 @@ dist-ssr
 
 # stats
 stats.html
+
+# Local Netlify folder
+.netlify

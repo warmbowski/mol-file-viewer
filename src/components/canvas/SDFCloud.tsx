@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useAtom } from "jotai";
-import { Color, Mesh, ShaderMaterial, SphereGeometry, Vector3 } from "three";
+import { Color, Mesh, ShaderMaterial, SphereGeometry } from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
-import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
+// import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 import { DEFAULT_CLOUD_COLOR } from "@constants";
 import { MoleculeAtom, scalePosition, scaleRadius } from "@utils";
 import { periodicTableAtom } from "@state";
@@ -28,12 +28,12 @@ export function SDFCloud({ atoms }: SDFCloudsProps) {
     });
 
     const cloudGeometry = BufferGeometryUtils.mergeGeometries(sphereGeoms);
-    const position = cloudGeometry.attributes.position.array;
-    const points: Vector3[] = [];
-    for (let i = 0; i < position.length; i += 3) {
-      points.push(new Vector3(position[i], position[i + 1], position[i + 2]));
-    }
-    const convexGeometry = new ConvexGeometry(points);
+    // const position = cloudGeometry.attributes.position.array;
+    // const points: Vector3[] = [];
+    // for (let i = 0; i < position.length; i += 3) {
+    //   points.push(new Vector3(position[i], position[i + 1], position[i + 2]));
+    // }
+    // const convexGeometry = new ConvexGeometry(points);
 
     const cloudMaterial = new ShaderMaterial({
       uniforms: {
