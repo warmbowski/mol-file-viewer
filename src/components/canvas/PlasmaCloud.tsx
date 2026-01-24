@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import colorsea from "colorsea";
 import { DEFAULT_CLOUD_COLOR } from "@constants";
 
 interface PlasmaCloudProps {
   position: [number, number, number];
   radius: number;
-  color?: number | string;
+  color?: string;
+  seed?: number;
 }
 
 const DEFAULT_PARAMS = {
@@ -16,7 +18,6 @@ const DEFAULT_PARAMS = {
   voidThreshold: 0.072,
 };
 
-// GLSL helpers and plasma shader (ported from assets/shell.js)
 const noiseFunctions = `
     vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -97,6 +98,7 @@ const plasmaFragment = `
     uniform float uScale;
     uniform float uBrightness;
     uniform float uThreshold;
+    uniform float uSeed;
     uniform vec3 uColorDeep;
     uniform vec3 uColorMid;
     uniform vec3 uColorBright;
@@ -109,11 +111,16 @@ const plasmaFragment = `
 
     void main() {
       vec3 p = vPosition * uScale;
+
+      // Per-instance seed offset to decorrelate noise between atoms
+      vec3 seedOffset = vec3(uSeed, uSeed * 1.37, uSeed * 2.13);
+
       vec3 q = vec3(
-        fbm(p + vec3(0.0, uTime * 0.05, 0.0)),
-        fbm(p + vec3(5.2, 1.3, 2.8) + uTime * 0.05),
-        fbm(p + vec3(2.2, 8.4, 0.5) - uTime * 0.02)
+        fbm(p + seedOffset + vec3(0.0, uTime * 0.05, 0.0)),
+        fbm(p + seedOffset + vec3(5.2, 1.3, 2.8) + uTime * 0.05),
+        fbm(p + seedOffset + vec3(2.2, 8.4, 0.5) - uTime * 0.02)
       );
+
       float density = fbm(p + 2.0 * q);
       float t = (density + 0.4) * 0.8;
       float alpha = smoothstep(uThreshold, 0.7, t);
@@ -138,26 +145,34 @@ export function PlasmaCloud({
   position,
   radius,
   color = DEFAULT_CLOUD_COLOR,
+  seed = 0.5,
 }: PlasmaCloudProps) {
   const material = useMemo(() => {
+    // vary the scale slightly per instance using seed to change noise frequency
+    const scale = DEFAULT_PARAMS.plasmaScale * (1.0 + (seed - 0.5) * 0.2);
+    const baseColor = colorsea(color);
+    const darkenedColor = baseColor.darken(30).hex();
+    const lightenedColor = baseColor.lighten(30).hex();
+
     return new THREE.ShaderMaterial({
       vertexShader: plasmaVertex,
       fragmentShader: plasmaFragment,
       uniforms: {
         uTime: { value: 0 },
-        uScale: { value: DEFAULT_PARAMS.plasmaScale },
+        uScale: { value: scale },
         uBrightness: { value: DEFAULT_PARAMS.plasmaBrightness },
         uThreshold: { value: DEFAULT_PARAMS.voidThreshold },
-        uColorDeep: { value: new THREE.Color(0x000000) },
-        uColorMid: { value: new THREE.Color(color) },
-        uColorBright: { value: new THREE.Color(0xffffff) },
+        uSeed: { value: seed },
+        uColorDeep: { value: new THREE.Color(darkenedColor) },
+        uColorMid: { value: new THREE.Color(baseColor.hex()) },
+        uColorBright: { value: new THREE.Color(lightenedColor) },
       },
       transparent: true,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
       depthWrite: false,
     });
-  }, [color]);
+  }, [color, seed]);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();

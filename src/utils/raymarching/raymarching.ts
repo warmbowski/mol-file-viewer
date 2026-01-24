@@ -104,7 +104,7 @@ abstract class SDFPrimitive extends Mesh<PrimitiveShapes> {
     this.shape = shape;
     this.material = new MeshBasicMaterial({
       wireframe: false,
-      color: new Color(0xffffff),
+      color: new Color("#ffffff"),
       transparent: true,
       opacity: 0.5,
       depthWrite: true,
@@ -258,7 +258,7 @@ export class Raymarcher extends Mesh<PlaneGeometry, RawShaderMaterial> {
         materials: {
           value: [
             {
-              color: new Color(0xffd700),
+              color: new Color("#ffd700"),
               params: new Vector4(0.5, 0.5, 0.5, 0.5),
             },
           ],
