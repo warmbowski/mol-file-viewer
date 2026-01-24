@@ -15,6 +15,7 @@ export type RadiusType = keyof ElementData["radius"];
 export type CloudType =
   | "none"
   | "atomic"
+  | "plasma"
   | "vanderwaals"
   | "shrinkwrap"
   | "sdf"

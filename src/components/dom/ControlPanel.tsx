@@ -57,6 +57,7 @@ export function ControlPanel() {
         options: {
           None: "none",
           Atomic: "atomic",
+          Plasma: "plasma",
           "Van der Waals": "vanderwaals",
           Shrinkwrap: "shrinkwrap",
           // SDF: "sdf",

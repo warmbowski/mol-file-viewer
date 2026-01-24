@@ -17,6 +17,7 @@ import { ShrinkWrapCloud } from "./ShrinkwrapCloud";
 import { FOV, SCALE_FACTOR } from "@constants";
 import { SDFCloud } from "./SDFCloud";
 import { MEPCloud } from "./Mep";
+import { PlasmaClouds } from "./PlasmaClouds";
 
 export function Molecule({
   molecule,
@@ -52,6 +53,7 @@ export function Molecule({
         {!hideSticks && <StickBonds atoms={atoms} bonds={bonds} />}
         {!hideBalls && <BallElements atoms={atoms} />}
         {cloudType === "atomic" && <AtomicClouds atoms={atoms} />}
+        {cloudType === "plasma" && <PlasmaClouds atoms={atoms} />}
         {cloudType === "vanderwaals" && (
           <VanDerWaalsClouds atoms={atoms} cacheKey={base64} />
         )}
